@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aim High Tuition — Ascend Maths Baseline</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand:      #7B3F00;
+    --brand-dark: #5C2E00;
+    --gold:       #C8860A;
+    --gold-light: #FFF8E7;
+    --gold-mid:   #FFE9A0;
+    --green:      #1B5E20;
+    --green-light:#E8F5E9;
+    --amber:      #E65100;
+    --amber-light:#FFF3E0;
+    --red-c:      #B71C1C;
+    --red-light:  #FFEBEE;
+    --grey-light: #F5F5F5;
+    --grey-mid:   #E0E0E0;
+    --text:       #1A1A1A;
+    --text-soft:  #555;
+    --white:      #FFFFFF;
+    --radius:     12px;
+    --shadow:     0 4px 20px rgba(0,0,0,0.10);
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--gold-light);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── HEADER ── */
+  header {
+    width: 100%;
+    background: var(--brand);
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-star { font-size: 28px; }
+  .logo-text { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; }
+  .logo-sub  { font-size: 11px; opacity: 0.8; }
+
+  /* ── MAIN CARD ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 640px;
+    margin: 24px 16px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--grey-mid);
+    border-radius: 99px;
+    height: 10px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    background: linear-gradient(90deg, var(--brand), var(--gold));
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-soft);
+    text-align: right;
+    margin-bottom: 20px;
+  }
+
+  /* ── SECTION BADGE ── */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  /* ── QUESTION ── */
+  .q-number {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .q-hint {
+    font-size: 14px;
+    color: var(--brand);
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .q-display {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--brand-dark);
+    text-align: center;
+    margin: 12px 0 24px;
+    background: var(--gold-light);
+    border-radius: 12px;
+    padding: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .options.two-col   { grid-template-columns: 1fr 1fr; }
+  .options.three-col { grid-template-columns: 1fr 1fr 1fr; }
+  .options.four-col  { grid-template-columns: 1fr 1fr; }
+
+  .opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid var(--grey-mid);
+    border-radius: 10px;
+    background: var(--grey-light);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.15s;
+    color: var(--text);
+    width: 100%;
+  }
+  .opt-btn:hover { border-color: var(--brand); background: var(--gold-light); }
+  .opt-btn.selected {
+    border-color: var(--brand);
+    background: var(--gold-mid);
+    font-weight: 700;
+  }
+  .opt-btn.correct {
+    border-color: var(--green);
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .opt-btn.wrong {
+    border-color: var(--red-c);
+    background: var(--red-light);
+    color: var(--red-c);
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
+  .opt-letter {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .opt-btn.correct .opt-letter { background: var(--green); }
+  .opt-btn.wrong   .opt-letter { background: var(--red-c); }
+
+  /* ── I DON'T KNOW BUTTON ── */
+  .btn-idk {
+    width: 100%;
+    padding: 11px;
+    background: white;
+    color: var(--text-soft);
+    border: 2px dashed var(--grey-mid);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: all 0.15s;
+  }
+  .btn-idk:hover { border-color: var(--text-soft); color: var(--text); }
+
+  /* ── NEXT BUTTON ── */
+  .btn-next {
+    width: 100%;
+    padding: 16px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-next:hover { background: var(--brand-dark); }
+  .btn-next:disabled { background: var(--grey-mid); color: var(--text-soft); cursor: not-allowed; }
+
+  /* ── CHECKPOINT ── */
+  .checkpoint {
+    background: var(--gold-mid);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+  .checkpoint .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+
+  /* ── COVER PAGE ── */
+  .cover-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--brand-dark);
+    margin-bottom: 6px;
+  }
+  .cover-sub {
+    font-size: 15px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+  }
+  .instr-box {
+    background: var(--gold-light);
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .instr-box h3 {
+    color: var(--brand-dark);
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .instr-box li {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 6px;
+    margin-left: 16px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .form-group input, .form-group select {
+    padding: 10px 12px;
+    border: 2px solid var(--grey-mid);
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--brand); }
+
+  /* ── RESULTS PAGE ── */
+  .result-hero {
+    text-align: center;
+    padding: 24px 0 16px;
+  }
+  .result-emoji { font-size: 64px; line-height: 1; margin-bottom: 12px; }
+  .result-score {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-score.green { color: var(--green); }
+  .result-score.amber { color: var(--amber); }
+  .result-score.red-c { color: var(--red-c); }
+  .rag-pill {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rag-pill.green { background: var(--green-light); color: var(--green); }
+  .rag-pill.amber { background: var(--amber-light); color: var(--amber); }
+  .rag-pill.red-c { background: var(--red-light);   color: var(--red-c); }
+  .placement-box {
+    background: var(--brand);
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .placement-box .label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
+  .placement-box .value { font-size: 22px; font-weight: 900; }
+
+  .section-breakdown {
+    margin-top: 20px;
+  }
+  .section-breakdown h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .sec-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .sec-letter {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .sec-info { flex: 1; }
+  .sec-name { font-size: 13px; font-weight: 600; }
+  .sec-bar-wrap { height: 8px; background: var(--grey-mid); border-radius: 99px; margin-top: 4px; overflow: hidden; }
+  .sec-bar { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+  .sec-bar.green { background: var(--green); }
+  .sec-bar.amber { background: var(--amber); }
+  .sec-bar.red-c { background: var(--red-c); }
+  .sec-score { font-size: 13px; font-weight: 700; min-width: 36px; text-align: right; }
+
+  .summary-box {
+    background: var(--grey-light);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .submit-status {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .submit-status.sending { background: var(--gold-light); color: var(--brand); }
+  .submit-status.sent    { background: var(--green-light); color: var(--green); }
+  .submit-status.error   { background: var(--red-light);   color: var(--red-c); }
+
+  @media (max-width: 480px) {
+    .card { padding: 20px 16px; margin: 12px 10px; }
+    .q-text { font-size: 18px; }
+    .q-display { font-size: 32px; }
+    .form-row { grid-template-columns: 1fr; }
+    .options.two-col { grid-template-columns: 1fr; }
+    .options.three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-star">⭐</div>
+  <div>
+    <div class="logo-text">AIM HIGH TUITION</div>
+    <div class="logo-sub">Ascend Maths Baseline Assessment</div>
+  </div>
+</header>
+
+<div class="card" id="app"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Paste your Google Apps Script Web App URL here after deploying
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOeGLNwEsKvlZxfgSEZBMWjfbjvGYV9UNaaCKwT0jD0uNF_dHuZ9zT5zpctpsCdm2Xog/exec";
+
+// ── QUESTION DATA ────────────────────────────────────────────────────────────
+const SECTIONS = {
+  A: { name: "Numbers",              color: "#7B3F00" },
+  B: { name: "Counting Sequences",   color: "#1565C0" },
+  C: { name: "Addition",             color: "#2E7D32" },
+  D: { name: "Subtraction",          color: "#6A1B9A" },
+  E: { name: "Shapes",               color: "#AD1457" },
+  F: { name: "Fractions",            color: "#00695C" },
+  G: { name: "Measurement & Money",  color: "#E65100" },
+  H: { name: "Times Tables & Data",  color: "#37474F" },
+};
+
+function numberBoxes(items) {
+  return `<div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:8px 0">
+    ${items.map(v => `<div style="min-width:52px;padding:10px 14px;background:white;border:3px solid #7B3F00;border-radius:10px;font-size:24px;font-weight:900;color:#7B3F00;text-align:center">${v}</div>`).join('')}
+  </div>`;
+}
+
+const QUESTIONS = [
+  // A — Numbers (Q1-5)
+  { id:1, sec:"A", text:"Write this number in digits.", display:"Fourteen",
+    opts:["41","40","14","4"], ans:"C" },
+  { id:2, sec:"A", text:"Write one more than:", display:"19",
+    opts:["18","21","17","20"], ans:"D" },
+  { id:3, sec:"A", text:"Write one less than:", display:"30",
+    opts:["31","28","29","20"], ans:"C" },
+  { id:4, sec:"A", text:"Put these numbers in order, smallest first.", display:numberBoxes([15,7,23,11]),
+    opts:["15, 7, 11, 23","7, 11, 15, 23","23, 15, 11, 7","7, 15, 11, 23"], ans:"B" },
+  { id:5, sec:"A", text:"Which sign goes in the gap?", display:"16 ___ 61",
+    opts:["=","<","+",">"], ans:"B" },
+
+  // B — Counting (Q6-8)
+  { id:6, sec:"B", text:"Count in 2s. What is the missing number?", display:numberBoxes([2,4,6,"?",10]),
+    opts:["9","7","5","8"], ans:"D" },
+  { id:7, sec:"B", text:"Count in 5s. What is the missing number?", display:numberBoxes([5,10,15,"?",25]),
+    opts:["18","21","20","22"], ans:"C" },
+  { id:8, sec:"B", text:"Count in 10s. What is the missing number?", display:numberBoxes([10,20,"?",40,50]),
+    opts:["35","25","32","30"], ans:"D",
+    checkpoint:"Well done! Keep going! 🌟" },
+
+  // C — Addition (Q9-12)
+  { id:9,  sec:"C", text:"Work out:", display:"5 + 3 = ?",
+    opts:["7","9","6","8"], ans:"D" },
+  { id:10, sec:"C", text:"Work out:", display:"9 + 6 = ?",
+    opts:["16","14","15","13"], ans:"C" },
+  { id:11, sec:"C", text:"Work out:", display:"14 + 5 = ?",
+    opts:["18","20","21","19"], ans:"D" },
+  { id:12, sec:"C", text:"Work out:", display:"23 + 10 = ?",
+    opts:["34","24","33","32"], ans:"C" },
+
+  // D — Subtraction (Q13-15)
+  { id:13, sec:"D", text:"Work out:", display:"10 − 4 = ?",
+    opts:["5","4","7","6"], ans:"D" },
+  { id:14, sec:"D", text:"Work out:", display:"16 − 7 = ?",
+    opts:["8","9","7","10"], ans:"B" },
+  { id:15, sec:"D", text:"Work out:", display:"35 − 10 = ?",
+    opts:["26","24","25","20"], ans:"C" },
+
+  // E — Shapes (Q16-18)
+  { id:16, sec:"E", text:"How many sides does this shape have?",
+    display:`<div style="display:flex;justify-content:center;padding:10px 0">
+  <svg width="140" height="130" viewBox="0 0 140 130">
+    <polygon points="70,10 130,120 10,120" fill="#FFF3E0" stroke="#7B3F00" stroke-width="4"/>
+  </svg>
+</div>`,
+    opts:["4 sides","2 sides","5 sides","3 sides"], ans:"D" },
+  { id:17, sec:"E", text:"How many corners does this shape have?",
+    display:`<div style="display:flex;justify-content:center;padding:10px 0">
+  <svg width="180" height="120" viewBox="0 0 180 120">
+    <rect x="10" y="10" width="160" height="100" fill="#FFF3E0" stroke="#7B3F00" stroke-width="4"/>
+  </svg>
+</div>`,
+    opts:["3 corners","2 corners","4 corners","6 corners"], ans:"C" },
+  { id:18, sec:"E", text:"What is this 3D shape called?",
+    display:`<div style="display:flex;justify-content:center;padding:10px 0">
+  <svg width="160" height="160" viewBox="0 0 160 160">
+    <polygon points="40,60 100,60 120,40 60,40" fill="#FFE9A0" stroke="#7B3F00" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="40" y="60" width="60" height="60" fill="#FFF3E0" stroke="#7B3F00" stroke-width="3"/>
+    <polygon points="100,60 120,40 120,100 100,120" fill="#F5D98A" stroke="#7B3F00" stroke-width="3" stroke-linejoin="round"/>
+  </svg>
+</div>`,
+    opts:["Cuboid","Cube","Sphere","Cone"], ans:"B" },
+
+  // F — Fractions (Q19-21)
+  { id:19, sec:"F", text:"What is half of 10?", display:"Half of 10 = ?",
+    opts:["4","6","5","2"], ans:"C" },
+  { id:20, sec:"F", text:"8 sweets are shared equally into 4 groups. How many sweets are in one group?",
+    display:`<div style="display:flex;justify-content:center;gap:10px;padding:10px 0;flex-wrap:wrap">
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+  <svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="#E91E63"/></svg>
+</div>`,
+    opts:["4","8","1","2"], ans:"D" },
+  { id:21, sec:"F", text:"What fraction of this shape is shaded?",
+    display:`<div style="display:flex;justify-content:center;padding:10px 0">
+  <svg width="120" height="120" viewBox="0 0 120 120">
+    <rect x="0" y="0" width="58" height="58" fill="#7B3F00"/>
+    <rect x="62" y="0" width="58" height="58" fill="#FFF3E0" stroke="#7B3F00" stroke-width="3"/>
+    <rect x="0" y="62" width="58" height="58" fill="#7B3F00"/>
+    <rect x="62" y="62" width="58" height="58" fill="#FFF3E0" stroke="#7B3F00" stroke-width="3"/>
+  </svg>
+</div>`,
+    opts:["Three quarters","One quarter","One half","Two thirds"], ans:"C",
+    checkpoint:"Nearly there! Amazing work! 🎉" },
+
+  // G — Measurement & Money (Q22-24)
+  { id:22, sec:"G", text:"Look at the rulers below. Which line is the longest?",
+    display:`<div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#555">Compare the lengths:</div>
+<div style="margin-bottom:10px;display:flex;align-items:center;gap:10px">
+  <span style="font-weight:700;min-width:20px">A</span>
+  <div style="height:14px;width:100px;background:#7B3F00;border-radius:3px"></div>
+  <span style="font-size:13px;color:#555">10 cm</span>
+</div>
+<div style="margin-bottom:10px;display:flex;align-items:center;gap:10px">
+  <span style="font-weight:700;min-width:20px">B</span>
+  <div style="height:14px;width:200px;background:#1565C0;border-radius:3px"></div>
+  <span style="font-size:13px;color:#555">20 cm</span>
+</div>
+<div style="margin-bottom:4px;display:flex;align-items:center;gap:10px">
+  <span style="font-weight:700;min-width:20px">C</span>
+  <div style="height:14px;width:300px;max-width:100%;background:#2E7D32;border-radius:3px"></div>
+  <span style="font-size:13px;color:#555">30 cm</span>
+</div>`,
+    opts:["They are the same","A: 10 cm","B: 20 cm","C: 30 cm"], ans:"D" },
+  { id:23, sec:"G", text:"Add these coins together.",
+    display:`<div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:8px 0">
+  <!-- 10p coin -->
+  <svg width="80" height="80" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="38" fill="#C0A060" stroke="#8B6914" stroke-width="3"/>
+    <circle cx="40" cy="40" r="32" fill="#D4B472" stroke="#8B6914" stroke-width="1.5"/>
+    <text x="40" y="38" text-anchor="middle" font-size="18" font-weight="900" fill="#5C3D00" font-family="Arial">10p</text>
+  </svg>
+  <span style="font-size:32px;font-weight:900;color:#555">+</span>
+  <!-- 5p coin -->
+  <svg width="70" height="70" viewBox="0 0 70 70">
+    <circle cx="35" cy="35" r="33" fill="#C0C0C0" stroke="#888" stroke-width="3"/>
+    <circle cx="35" cy="35" r="27" fill="#D8D8D8" stroke="#888" stroke-width="1.5"/>
+    <text x="35" y="33" text-anchor="middle" font-size="16" font-weight="900" fill="#333" font-family="Arial">5p</text>
+  </svg>
+  <span style="font-size:32px;font-weight:900;color:#555">+</span>
+  <!-- 2p coin -->
+  <svg width="65" height="65" viewBox="0 0 65 65">
+    <circle cx="32" cy="32" r="30" fill="#B87333" stroke="#7A4A1E" stroke-width="3"/>
+    <circle cx="32" cy="32" r="24" fill="#CD853F" stroke="#7A4A1E" stroke-width="1.5"/>
+    <text x="32" y="30" text-anchor="middle" font-size="15" font-weight="900" fill="#3D1A00" font-family="Arial">2p</text>
+  </svg>
+  <span style="font-size:32px;font-weight:900;color:#555">= ?</span>
+</div>`,
+    opts:["20p","15p","12p","17p"], ans:"D" },
+
+  { id:24, sec:"G", text:"What time does this clock show?",
+    display:`<div style="display:flex;justify-content:center;padding:8px 0">
+  <svg width="180" height="180" viewBox="0 0 180 180">
+    <!-- Clock face -->
+    <circle cx="90" cy="90" r="85" fill="white" stroke="#333" stroke-width="4"/>
+    <circle cx="90" cy="90" r="80" fill="#FAFAFA" stroke="#ccc" stroke-width="1"/>
+    <!-- Hour numbers -->
+    <text x="90"  y="22"  text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="Arial">12</text>
+    <text x="155" y="95"  text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="Arial">3</text>
+    <text x="90"  y="170" text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="Arial">6</text>
+    <text x="25"  y="95"  text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="Arial">9</text>
+    <text x="132" y="35"  text-anchor="middle" font-size="12" fill="#555" font-family="Arial">1</text>
+    <text x="155" y="58"  text-anchor="middle" font-size="12" fill="#555" font-family="Arial">2</text>
+    <text x="155" y="132" text-anchor="middle" font-size="12" fill="#555" font-family="Arial">4</text>
+    <text x="132" y="158" text-anchor="middle" font-size="12" fill="#555" font-family="Arial">5</text>
+    <text x="48"  y="158" text-anchor="middle" font-size="12" fill="#555" font-family="Arial">7</text>
+    <text x="25"  y="132" text-anchor="middle" font-size="12" fill="#555" font-family="Arial">8</text>
+    <text x="25"  y="58"  text-anchor="middle" font-size="12" fill="#555" font-family="Arial">10</text>
+    <text x="48"  y="35"  text-anchor="middle" font-size="12" fill="#555" font-family="Arial">11</text>
+    <!-- Minute marks -->
+    ${Array.from({length:60},(_,i)=>{
+      const a=(i*6-90)*Math.PI/180;
+      const r1=i%5===0?68:72, r2=76;
+      return `<line x1="${90+r1*Math.cos(a)}" y1="${90+r1*Math.sin(a)}" x2="${90+r2*Math.cos(a)}" y2="${90+r2*Math.sin(a)}" stroke="${i%5===0?'#333':'#ccc'}" stroke-width="${i%5===0?2:1}"/>`;
+    }).join('')}
+    <!-- Hour hand pointing to 6 (180 degrees) -->
+    <line x1="90" y1="90" x2="90" y2="148" stroke="#222" stroke-width="6" stroke-linecap="round"/>
+    <!-- Minute hand pointing to 12 (0 degrees = up) -->
+    <line x1="90" y1="90" x2="90" y2="22" stroke="#444" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Centre dot -->
+    <circle cx="90" cy="90" r="5" fill="#333"/>
+  </svg>
+</div>`,
+    opts:["Half past 6","Half past 3","12 o'clock","6 o'clock"], ans:"D" },
+
+  // H — Times Tables & Data (Q25-28)
+  { id:25, sec:"H", text:"Work out:", display:"2 × 5 = ?",
+    opts:["7","15","10","12"], ans:"C" },
+  { id:26, sec:"H", text:"Work out:", display:"10 × 3 = ?",
+    opts:["13","33","23","30"], ans:"D" },
+
+  { id:27, sec:"H", text:"Look at the table. Which fruit got the most votes?",
+    display:`<table style="width:100%;border-collapse:collapse;font-size:15px;text-align:left;margin-top:4px">
+<tr style="background:#37474F;color:white">
+  <th style="padding:9px 14px">Fruit</th>
+  <th style="padding:9px 14px;text-align:center">Votes</th>
+</tr>
+<tr style="background:#FFF8E7">
+  <td style="padding:10px 14px;font-weight:600">🍎 Apples</td>
+  <td style="padding:10px 14px;text-align:center;font-weight:700;font-size:18px">6</td>
+</tr>
+<tr style="background:#F5F5F5">
+  <td style="padding:10px 14px;font-weight:600">🍌 Bananas</td>
+  <td style="padding:10px 14px;text-align:center;font-weight:700;font-size:18px">4</td>
+</tr>
+<tr style="background:#FFF8E7">
+  <td style="padding:10px 14px;font-weight:600">🍇 Grapes</td>
+  <td style="padding:10px 14px;text-align:center;font-weight:700;font-size:18px">3</td>
+</tr>
+</table>`,
+    opts:["Grapes","Bananas","Apples","They all got the same"], ans:"C" },
+
+  { id:28, sec:"H", text:"Look at the tally chart. How many children chose Cat?",
+    display:`<table style="width:100%;border-collapse:collapse;font-size:15px;text-align:left">
+<tr style="background:#37474F;color:white">
+  <th style="padding:9px 14px">Pet</th>
+  <th style="padding:9px 14px">Tally</th>
+  <th style="padding:9px 14px;text-align:center">Total</th>
+</tr>
+<tr style="background:#FFF8E7">
+  <td style="padding:10px 14px;font-weight:600">🐶 Dog</td>
+  <td style="padding:8px 14px">
+    <svg width="90" height="30" viewBox="0 0 90 30">
+      <line x1="8"  y1="4" x2="8"  y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="18" y1="4" x2="18" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="28" y1="4" x2="28" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="38" y1="4" x2="38" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="4"  y1="26" x2="42" y2="4"  stroke="#333" stroke-width="2.5"/>
+      <line x1="58" y1="4" x2="58" y2="26" stroke="#333" stroke-width="2.5"/>
+    </svg>
+  </td>
+  <td style="padding:10px 14px;text-align:center;font-weight:700;font-size:18px">6</td>
+</tr>
+<tr style="background:#FFE9A0">
+  <td style="padding:10px 14px;font-weight:600">🐱 Cat</td>
+  <td style="padding:8px 14px">
+    <svg width="90" height="30" viewBox="0 0 90 30">
+      <line x1="8"  y1="4" x2="8"  y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="18" y1="4" x2="18" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="28" y1="4" x2="28" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="38" y1="4" x2="38" y2="26" stroke="#333" stroke-width="2.5"/>
+      <line x1="4"  y1="26" x2="42" y2="4"  stroke="#333" stroke-width="2.5"/>
+    </svg>
+  </td>
+  <td style="padding:10px 14px;text-align:center;font-weight:700;font-size:24px;color:#7B3F00">?</td>
+</tr>
+</table>`,
+    opts:["3","6","4","5"], ans:"D" },
+];
+
+// Correct answers map
+const ANSWER_KEY = {};
+QUESTIONS.forEach(q => { ANSWER_KEY[q.id] = q.ans; });
+
+// Section max scores
+const SEC_MAX = { A:5, B:3, C:4, D:3, E:3, F:3, G:3, H:4 };
+
+// ── PLACEMENT LOGIC ──────────────────────────────────────────────────────────
+function getPlacement(total, secA) {
+  if (total >= 25) return {
+    rag: "GREEN", cls: "green", emoji: "🌟",
+    group: "Attempt Ignite Baseline",
+    detail: "Score 25+ — administer the Ignite baseline next to confirm level.",
+    teacherNote: "Score 25+. Move to Ignite baseline paper."
+  };
+  if (total >= 21 && secA >= 4) return {
+    rag: "GREEN", cls: "green", emoji: "🌟",
+    group: "Ascend 2",
+    detail: "Strong score with secure number knowledge.",
+    teacherNote: "Score 21-24, Sec A " + secA + "/5. Place in Ascend 2."
+  };
+  if (total >= 21 && secA <= 3) return {
+    rag: "GREEN", cls: "green", emoji: "🌟",
+    group: "Ascend 1",
+    detail: "Good overall score but number skills need consolidation.",
+    teacherNote: "Score 21-24 but Sec A only " + secA + "/5. Place in Ascend 1 — number gaps."
+  };
+  if (total >= 12 && secA >= 4) return {
+    rag: "AMBER", cls: "amber", emoji: "⭐",
+    group: "Ascend 2",
+    detail: "Developing well. Number knowledge is secure.",
+    teacherNote: "Score 12-20, Sec A " + secA + "/5. Place in Ascend 2."
+  };
+  if (total >= 12 && secA <= 3) return {
+    rag: "AMBER", cls: "amber", emoji: "⭐",
+    group: "Ascend 1",
+    detail: "Developing. Number skills need more support.",
+    teacherNote: "Score 12-20, Sec A only " + secA + "/5. Place in Ascend 1."
+  };
+  return {
+    rag: "RED", cls: "red-c", emoji: "💪",
+    group: "Ascend 1",
+    detail: "Needs foundational support. Verbal check recommended.",
+    teacherNote: "Score 0-11, Sec A " + secA + "/5. Ascend 1 — verbal check. Contact parent."
+  };
+}
+
+function getSectionRag(score, max) {
+  const pct = score / max;
+  if (pct >= 0.8) return "green";
+  if (pct >= 0.5) return "amber";
+  return "red-c";
+}
+
+function buildSummary(student, total, secScores, placement) {
+  const strong = [], weak = [];
+  Object.entries(secScores).forEach(([sec, sc]) => {
+    const pct = sc / SEC_MAX[sec];
+    if (pct >= 0.8) strong.push(SECTIONS[sec].name);
+    else if (pct < 0.5) weak.push(SECTIONS[sec].name);
+  });
+  const secA = secScores["A"];
+
+  let text = `${student.name} scored ${total}/28 on the Ascend Baseline (${student.year}, ${student.school}). `;
+  text += `PLACEMENT: ${placement.group}. ${placement.teacherNote} `;
+  if (strong.length) text += `Strong sections: ${strong.join(", ")}. `;
+  if (weak.length)   text += `Weak sections needing support: ${weak.join(", ")}. `;
+  text += `Section A (Numbers): ${secA}/5. `;
+  if (secA <= 2 && total <= 11) text += `Verbal check strongly recommended before first lesson. `;
+  return text;
+}
+
+// ── TEACHER MODE ─────────────────────────────────────────────────────────────
+const TEACHER_PIN = "2468";
+const RESULTS_STORE_KEY = "aimhigh_ascend_all_results";
+let teacherResultsCache = null; // null = not fetched yet / fetch failed, use local fallback
+let dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+
+function saveResultsToStore(studentData) {
+  try {
+    const all = getStoredResults();
+    all.unshift(studentData); // newest first
+    if (all.length > 50) all.splice(50);
+    localStorage.setItem(RESULTS_STORE_KEY, JSON.stringify(all));
+  } catch(e) {}
+}
+
+function getStoredResults() {
+  try {
+    const raw = localStorage.getItem(RESULTS_STORE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function formatDateNice(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function normalizeRemoteResult(row) {
+  // Prefer the raw "Answers JSON" column (exact letters the student picked)
+  // for full per-question review. Falls back to correctness-only reconstruction
+  // for any older rows submitted before this column existed.
+  let answers = null;
+  if (row["Answers JSON"]) {
+    try { answers = JSON.parse(row["Answers JSON"]); } catch(e) { answers = null; }
+  }
+  if (!answers) {
+    answers = {};
+    QUESTIONS.forEach(q => {
+      const isCorrect = Number(row["Q" + q.id]) === 1;
+      answers[q.id] = isCorrect ? q.ans : "✗";
+    });
+  }
+
+  return {
+    timestamp:   row["Timestamp"],
+    name:        row["Name"],
+    year:        row["Year"],
+    school:      row["School"],
+    teacher:     row["Teacher"],
+    date:        row["Date"],
+    total:       Number(row["Total"]) || 0,
+    rag:         row["RAG"],
+    placement:   row["Group Placed"],
+    teacherNote: row["Teacher Action Note"],
+    timeTaken:   row["Time Taken"],
+    tutorComment: row["Tutor Comments"] || "",
+    secScores: {
+      A: Number(row["Sec A (5)"]) || 0,
+      B: Number(row["Sec B (3)"]) || 0,
+      C: Number(row["Sec C (4)"]) || 0,
+      D: Number(row["Sec D (3)"]) || 0,
+      E: Number(row["Sec E (3)"]) || 0,
+      F: Number(row["Sec F (3)"]) || 0,
+      G: Number(row["Sec G (3)"]) || 0,
+      H: Number(row["Sec H (4)"]) || 0,
+    },
+    answers: answers,
+  };
+}
+
+function fetchRemoteResults() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    return Promise.resolve(null);
+  }
+  return fetch(APPS_SCRIPT_URL)
+    .then(res => res.json())
+    .then(rows => rows.map(normalizeRemoteResult))
+    .catch(() => null);
+}
+
+function saveTutorComment(r) {
+  const statusEl = document.getElementById("comment-save-status");
+  const comment = document.getElementById("tutor-comment-box").value;
+
+  if (!r.timestamp) {
+    statusEl.textContent = "⚠️ Can't save — this result predates comment support.";
+    statusEl.style.color = "var(--red-c)";
+    return;
+  }
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    statusEl.textContent = "⚠️ Apps Script URL not configured.";
+    statusEl.style.color = "var(--red-c)";
+    return;
+  }
+
+  statusEl.textContent = "Saving...";
+  statusEl.style.color = "var(--text-soft)";
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ action: "addComment", timestamp: r.timestamp, comment: comment }),
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "ok") {
+        r.tutorComment = comment;
+        if (teacherResultsCache) {
+          const match = teacherResultsCache.find(x => x.timestamp === r.timestamp);
+          if (match) match.tutorComment = comment;
+        }
+        const local = getStoredResults();
+        const localMatch = local.find(x => x.timestamp === r.timestamp);
+        if (localMatch) {
+          localMatch.tutorComment = comment;
+          localStorage.setItem(RESULTS_STORE_KEY, JSON.stringify(local));
+        }
+        statusEl.textContent = "✅ Saved";
+        statusEl.style.color = "#166534";
+      } else {
+        statusEl.textContent = "⚠️ Could not save — " + (res.message || "unknown error");
+        statusEl.style.color = "var(--red-c)";
+      }
+    })
+    .catch(() => {
+      statusEl.textContent = "⚠️ Could not reach Google Sheet.";
+      statusEl.style.color = "var(--red-c)";
+    });
+}
+
+function renderTeacherLoading() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div style="text-align:center;padding:60px 0">
+      <div style="font-size:36px;margin-bottom:12px">☁️</div>
+      <div style="font-size:15px;color:var(--text-soft)">Loading results from Google Sheet…</div>
+    </div>
+  `;
+}
+
+function renderTeacherPin() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div style="text-align:center;padding:40px 0 20px">
+      <div style="font-size:40px;margin-bottom:10px">🔒</div>
+      <div style="font-size:20px;font-weight:900;color:var(--brand-dark);margin-bottom:6px">Teacher Mode</div>
+      <div style="font-size:14px;color:var(--text-soft);margin-bottom:20px">Enter the PIN to view results</div>
+      <input id="pin-input" type="password" inputmode="numeric" placeholder="PIN"
+        style="width:160px;text-align:center;font-size:22px;letter-spacing:6px;padding:10px;border:2px solid var(--grey-mid);border-radius:10px;outline:none;margin-bottom:16px;">
+      <br>
+      <button id="btn-pin-ok" class="btn-next" style="width:160px">Enter</button>
+      <div style="margin-top:16px">
+        <button id="btn-pin-back" style="background:none;border:none;color:var(--text-soft);font-size:13px;cursor:pointer;text-decoration:underline;">← Back</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("btn-pin-back").addEventListener("click", () => render());
+
+  document.getElementById("btn-pin-ok").addEventListener("click", () => {
+    const pin = document.getElementById("pin-input").value;
+    if (pin === TEACHER_PIN) {
+      renderTeacherLoading();
+      fetchRemoteResults().then(remote => {
+        teacherResultsCache = remote; // null if offline/failed — dashboard falls back to local
+        renderTeacherDashboard();
+      });
+    } else {
+      document.getElementById("pin-input").style.borderColor = "var(--red-c)";
+      document.getElementById("pin-input").value = "";
+      document.getElementById("pin-input").placeholder = "Wrong PIN";
+    }
+  });
+}
+
+function passesFilters(r) {
+  if (dashboardFilters.search && !(r.name||"").toLowerCase().includes(dashboardFilters.search.toLowerCase())) return false;
+  if (dashboardFilters.year && r.year !== dashboardFilters.year) return false;
+  if (dashboardFilters.rag && r.rag !== dashboardFilters.rag) return false;
+  if (dashboardFilters.dateFrom) {
+    const d = new Date(r.date);
+    const from = new Date(dashboardFilters.dateFrom);
+    if (isNaN(d) || d < from) return false;
+  }
+  if (dashboardFilters.dateTo) {
+    const d = new Date(r.date);
+    const to = new Date(dashboardFilters.dateTo);
+    to.setHours(23,59,59,999);
+    if (isNaN(d) || d > to) return false;
+  }
+  return true;
+}
+
+function renderTeacherDashboard() {
+  const usingRemote = teacherResultsCache !== null;
+  const all = usingRemote ? teacherResultsCache : getStoredResults();
+  const filtered = all.filter(passesFilters);
+
+  const years = [...new Set(all.map(r => r.year).filter(Boolean))].sort();
+
+  const app = document.getElementById("app");
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="font-size:20px;font-weight:900;color:var(--brand-dark);flex:1">👨‍🏫 Teacher Dashboard</div>
+      <button id="btn-td-refresh" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">🔄</button>
+      <button id="btn-td-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">✕ Exit</button>
+    </div>
+    <div style="font-size:12px;margin-bottom:16px;color:${usingRemote ? '#166534' : '#92400E'};background:${usingRemote ? '#DCFCE7' : '#FEF3C7'};border-radius:8px;padding:6px 10px;">
+      ${usingRemote
+        ? '☁️ Synced from Google Sheet — results from every device'
+        : '⚠️ Could not reach Google Sheet — showing results saved on this device only'}
+    </div>
+
+    <input id="td-search" type="text" placeholder="🔍 Search student name..." value="${dashboardFilters.search}"
+      style="width:100%;border:2px solid var(--grey-mid);border-radius:10px;padding:10px 14px;font-size:15px;margin-bottom:10px;outline:none;">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <select id="td-filter-year" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All year groups</option>
+        ${years.map(y => `<option value="${y}" ${dashboardFilters.year===y?'selected':''}>${y}</option>`).join('')}
+      </select>
+      <select id="td-filter-rag" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All statuses</option>
+        <option value="GREEN" ${dashboardFilters.rag==='GREEN'?'selected':''}>🟢 Green</option>
+        <option value="AMBER" ${dashboardFilters.rag==='AMBER'?'selected':''}>🟠 Amber</option>
+        <option value="RED" ${dashboardFilters.rag==='RED'?'selected':''}>🔴 Red</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <label style="font-size:11px;color:var(--text-soft);display:block;margin-bottom:2px">From date</label>
+        <input id="td-filter-from" type="date" value="${dashboardFilters.dateFrom}" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:7px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--text-soft);display:block;margin-bottom:2px">To date</label>
+        <input id="td-filter-to" type="date" value="${dashboardFilters.dateTo}" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:7px 10px;font-size:13px;">
+      </div>
+    </div>
+    ${(dashboardFilters.search||dashboardFilters.year||dashboardFilters.rag||dashboardFilters.dateFrom||dashboardFilters.dateTo)
+      ? `<button id="td-clear-filters" style="background:none;border:none;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;margin-bottom:12px;padding:0;">✕ Clear all filters</button>`
+      : ''}
+    <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px">Showing ${filtered.length} of ${all.length} result${all.length===1?'':'s'}</div>
+  `;
+
+  if (filtered.length === 0) {
+    html += `<div style="text-align:center;color:var(--text-soft);padding:32px 0;font-size:15px;">
+      ${all.length === 0 ? 'No results found yet — complete an assessment first.' : 'No students match these filters.'}
+    </div>`;
+  } else {
+    filtered.forEach((r) => {
+      const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+      const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+      html += `
+        <div class="student-card" data-idx="${all.indexOf(r)}"
+          style="border:2px solid var(--grey-mid);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:15px;">${r.name}</div>
+            <div style="font-size:12px;color:var(--text-soft);">${r.year} · ${r.school||''} · ${formatDateNice(r.date)}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:20px;font-weight:900;color:var(--brand-dark)">${r.total}/28</div>
+            <span style="background:${ragBg};color:${ragFg};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.placement||r.rag}</span>
+          </div>
+          <div style="font-size:18px;color:var(--grey-mid)">›</div>
+        </div>
+      `;
+    });
+  }
+
+  app.innerHTML = html;
+
+  document.getElementById("btn-td-back").addEventListener("click", () => render());
+  document.getElementById("btn-td-refresh").addEventListener("click", () => {
+    renderTeacherLoading();
+    fetchRemoteResults().then(remote => {
+      teacherResultsCache = remote;
+      renderTeacherDashboard();
+    });
+  });
+  document.getElementById("td-search").addEventListener("input", e => {
+    dashboardFilters.search = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-year").addEventListener("change", e => {
+    dashboardFilters.year = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-rag").addEventListener("change", e => {
+    dashboardFilters.rag = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-from").addEventListener("change", e => {
+    dashboardFilters.dateFrom = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-to").addEventListener("change", e => {
+    dashboardFilters.dateTo = e.target.value;
+    renderTeacherDashboard();
+  });
+  const clearBtn = document.getElementById("td-clear-filters");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+      renderTeacherDashboard();
+    });
+  }
+  document.querySelectorAll(".student-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const idx = parseInt(card.dataset.idx);
+      renderTeacherStudentView(all[idx]);
+    });
+  });
+}
+
+function renderTeacherStudentView(r) {
+  const app = document.getElementById("app");
+  const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+  const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button id="btn-sv-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <div style="flex:1;font-size:18px;font-weight:900;color:var(--brand-dark)">${r.name}</div>
+      <button id="btn-print-report" style="background:var(--brand);border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Report</button>
+    </div>
+
+    <div style="text-align:center;background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:16px">
+      <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/28</span></div>
+      <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+      <div style="font-size:12px;color:var(--text-soft);margin-top:8px">${r.year} · ${r.school||''} · ${r.teacher||''} · ${formatDateNice(r.date)} · ⏱️ ${r.timeTaken||''}</div>
+    </div>
+
+    ${r.teacherNote ? `<div style="background:#f8fafc;border-left:3px solid var(--brand);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--text)">📝 ${r.teacherNote}</div>` : ''}
+
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:10px;color:#1a3a5c">Section Breakdown</div>
+  `;
+
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    const bc = cls === "green" ? "#1B5E20" : cls === "amber" ? "#E65100" : "#B71C1C";
+    html += `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px">
+          <span>${sec} · ${SECTIONS[sec].name}</span><span>${sc}/${max}</span>
+        </div>
+        <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div>
+
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:8px;color:#1a3a5c">💬 Tutor Comments</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Personal observations from the session — shows on the parent report.</div>
+      <textarea id="tutor-comment-box" rows="3" placeholder="e.g. Confident verbally but rushes written work..."
+        style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:10px;font-size:14px;font-family:inherit;resize:vertical;">${r.tutorComment || ''}</textarea>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+        <button id="btn-save-comment" style="background:var(--brand);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;color:white;">💾 Save Comment</button>
+        <span id="comment-save-status" style="font-size:12px;color:var(--text-soft);"></span>
+      </div>
+    </div>
+
+    <!-- Q by Q — clickable -->
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:4px;color:#1a3a5c">Question by Question</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:12px">Tap any question to review it in detail</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn-filter-sv" data-filter="all" style="padding:4px 12px;border-radius:20px;border:2px solid var(--brand-dark);background:var(--brand-dark);color:white;font-size:12px;font-weight:700;cursor:pointer">All</button>
+        <button class="btn-filter-sv" data-filter="wrong" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:white;color:#64748b;font-size:12px;font-weight:700;cursor:pointer">❌ Wrong</button>
+        <button class="btn-filter-sv" data-filter="skipped" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:white;color:#64748b;font-size:12px;font-weight:700;cursor:pointer">⬜ Skipped</button>
+      </div>
+  `;
+
+  QUESTIONS.forEach((q, qi) => {
+    const given   = r.answers ? r.answers[q.id] : null;
+    const correct = given && given !== 'IDK' && given === q.ans;
+    const idk     = given === 'IDK';
+    const icon    = correct ? '✅' : idk ? '⬜' : '❌';
+    const bg      = correct ? '#f0fdf4' : idk ? '#f8fafc' : '#fef2f2';
+    const border  = correct ? '#bbf7d0' : idk ? '#e2e8f0' : '#fca5a5';
+    const givenTxt = given && given !== 'IDK'
+      ? given : given === 'IDK' ? '?' : '–';
+    html += `
+      <div class="btn-q-detail" data-qi="${qi}"
+        style="background:${bg};border:1px solid ${border};border-radius:10px;
+          padding:9px 12px;margin-bottom:5px;cursor:pointer;
+          display:flex;align-items:center;gap:10px;transition:opacity 0.15s">
+        <span style="font-size:16px">${icon}</span>
+        <span style="font-weight:700;font-size:13px;flex:1">Q${q.id}. ${q.text.slice(0,65)}${q.text.length>65?'…':''}</span>
+        <span style="font-size:12px;font-weight:700;color:#94a3b8;min-width:16px">${givenTxt}</span>
+        <span style="color:#cbd5e1;font-size:16px">›</span>
+      </div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('btn-sv-back').addEventListener('click', () => renderTeacherDashboard());
+  document.getElementById('btn-print-report').addEventListener('click', () => renderParentReport(r));
+  document.getElementById('btn-save-comment').addEventListener('click', () => saveTutorComment(r));
+
+  document.querySelectorAll('.btn-filter-sv').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-filter-sv').forEach(b => {
+        b.style.background='white'; b.style.color='#64748b'; b.style.borderColor='#e2e8f0';
+      });
+      btn.style.background='var(--brand-dark)'; btn.style.color='white'; btn.style.borderColor='var(--brand-dark)';
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.btn-q-detail').forEach(card => {
+        const qi  = parseInt(card.dataset.qi);
+        const q   = QUESTIONS[qi];
+        const given = r.answers ? r.answers[q.id] : null;
+        const correct = given && given !== 'IDK' && given === q.ans;
+        const idk     = given === 'IDK' || !given;
+        const show = filter==='all' || (filter==='wrong' && !correct && !idk) || (filter==='skipped' && idk);
+        card.style.display = show ? 'flex' : 'none';
+      });
+    });
+  });
+
+  document.querySelectorAll('.btn-q-detail').forEach(card => {
+    card.addEventListener('click', () => {
+      renderQuestionDetail(r, parseInt(card.dataset.qi), 'all');
+    });
+  });
+}
+
+function renderQuestionDetail(r, qIndex, filter) {
+  const q = QUESTIONS[qIndex];
+  const given = r.answers ? r.answers[q.id] : null;
+  const correct = given && given !== 'IDK' && given === q.ans;
+  const idk = given === 'IDK' || !given;
+  const letters = ["A","B","C","D"];
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button id="btn-qd-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <div style="flex:1;font-size:16px;font-weight:900;color:var(--brand-dark)">${r.name} — Q${q.id}</div>
+      <button id="btn-qd-prev" ${qIndex===0?'disabled':''} style="background:var(--brand-dark);border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;color:white;${qIndex===0?'opacity:0.4;cursor:not-allowed;':''}">◀</button>
+      <button id="btn-qd-next" ${qIndex===QUESTIONS.length-1?'disabled':''} style="background:var(--brand-dark);border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;color:white;${qIndex===QUESTIONS.length-1?'opacity:0.4;cursor:not-allowed;':''}">▶</button>
+    </div>
+
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn-qd-filter" data-filter="all" style="padding:4px 12px;border-radius:20px;border:2px solid var(--brand-dark);background:${filter==='all'?'var(--brand-dark)':'white'};color:${filter==='all'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">All questions</button>
+      <button class="btn-qd-filter" data-filter="wrong" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:${filter==='wrong'?'var(--brand-dark)':'white'};color:${filter==='wrong'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">❌ Wrong only</button>
+      <button class="btn-qd-filter" data-filter="skipped" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:${filter==='skipped'?'var(--brand-dark)':'white'};color:${filter==='skipped'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">⬜ Skipped only</button>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#94a3b8;margin-bottom:10px">Question ${qIndex+1} of ${QUESTIONS.length}</div>
+
+    <div class="section-badge" style="background:${SECTIONS[q.sec].color}">${q.sec} · ${SECTIONS[q.sec].name}</div>
+
+    <div style="background:white;border:2px solid #dbeafe;border-radius:12px;padding:18px;margin-bottom:14px">
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Question ${q.id}</div>
+      <div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:12px">${q.text}</div>
+      ${q.display ? `<div class="q-display">${q.display}</div>` : ''}
+      <div class="options ${q.opts.length===4?'four-col':q.opts.length===3?'three-col':'two-col'}">
+  `;
+
+  q.opts.forEach((opt, i) => {
+    const letter = letters[i];
+    const isCorrectAns = letter === q.ans;
+    const isSelected = letter === given;
+    let cls = '';
+    let tag = '';
+    if (isCorrectAns) {
+      cls = 'correct';
+      tag = '<div style="font-size:12px;font-weight:700;margin-top:4px">✅ Correct</div>';
+    }
+    if (isSelected && !isCorrectAns) {
+      cls = 'wrong';
+      tag = '<div style="font-size:12px;font-weight:700;margin-top:4px">❌ Student chose this</div>';
+    }
+    html += `
+      <div class="opt-btn ${cls}" style="cursor:default;flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%">
+          <span class="opt-letter">${letter}</span>${opt}
+        </div>
+        ${tag}
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  if (idk) {
+    html += `<div style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">⬜ Student skipped this question (I don't know)</div>`;
+  }
+  html += `</div>`;
+
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('btn-qd-back').addEventListener('click', () => renderTeacherStudentView(r));
+  const prevBtn = document.getElementById('btn-qd-prev');
+  const nextBtn = document.getElementById('btn-qd-next');
+  if (prevBtn && qIndex > 0) prevBtn.addEventListener('click', () => renderQuestionDetail(r, qIndex-1, filter));
+  if (nextBtn && qIndex < QUESTIONS.length-1) nextBtn.addEventListener('click', () => renderQuestionDetail(r, qIndex+1, filter));
+
+  document.querySelectorAll('.btn-qd-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      let idx = qIndex;
+      const matches = (i) => {
+        const qq = QUESTIONS[i];
+        const gg = r.answers ? r.answers[qq.id] : null;
+        const cc = gg && gg !== 'IDK' && gg === qq.ans;
+        const ii = gg === 'IDK' || !gg;
+        return f==='all' || (f==='wrong' && !cc && !ii) || (f==='skipped' && ii);
+      };
+      if (!matches(idx)) {
+        for (let i = 0; i < QUESTIONS.length; i++) {
+          if (matches(i)) { idx = i; break; }
+        }
+      }
+      renderQuestionDetail(r, idx, f);
+    });
+  });
+}
+
+function renderParentReport(r) {
+  const app = document.getElementById("app");
+  const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+  const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+
+  let strong = [], weak = [];
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const pct = sc / SEC_MAX[sec];
+    if (pct >= 0.8) strong.push(SECTIONS[sec].name);
+    else if (pct < 0.5) weak.push(SECTIONS[sec].name);
+  });
+
+  let html = `
+    <div style="display:flex;gap:10px;margin-bottom:16px" class="no-print">
+      <button id="btn-pr-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <button id="btn-pr-print" style="background:var(--brand);border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Print</button>
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:900;color:var(--brand-dark);letter-spacing:0.5px">AIM HIGH TUITION</div>
+      <div style="font-size:12px;color:var(--text-soft)">Ascend Maths Baseline — Parent Report</div>
+    </div>
+
+    <div style="text-align:center;background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:18px">
+      <div style="font-size:18px;font-weight:900;color:var(--brand-dark)">${r.name}</div>
+      <div style="font-size:12px;color:var(--text-soft);margin-bottom:8px">${r.year} · ${r.school||''} · ${formatDateNice(r.date)}</div>
+      <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/28</span></div>
+      <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+    </div>
+
+    <div style="font-size:14px;line-height:1.7;color:var(--text);background:var(--grey-light);border-radius:10px;padding:16px;margin-bottom:18px">
+      ${r.name.split(' ')[0]} scored ${r.total} out of 28 on the Ascend Maths Baseline Assessment.
+      ${strong.length ? `They showed particular strength in ${strong.join(', ')}. ` : ''}
+      ${weak.length ? `Areas to focus on going forward include ${weak.join(', ')}. ` : ''}
+    </div>
+
+    <div style="margin-bottom:10px;font-size:14px;font-weight:800;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px">Section Breakdown</div>
+  `;
+
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    const bc = cls === "green" ? "#1B5E20" : cls === "amber" ? "#E65100" : "#B71C1C";
+    html += `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px">
+          <span>${SECTIONS[sec].name}</span><span>${sc}/${max}</span>
+        </div>
+        <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">✅ Strengths</div>
+        ${strong.length ? strong.map(s=>`<div style="font-size:12px;color:#14532D;margin-bottom:4px">• ${s}</div>`).join('') : '<div style="font-size:12px;color:#64748b">Working towards all sections</div>'}
+      </div>
+      <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:10px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">🎯 Priority Areas</div>
+        ${weak.length ? weak.map(s=>`<div style="font-size:12px;color:#7F1D1D;margin-bottom:4px">• ${s}</div>`).join('') : '<div style="font-size:12px;color:#64748b">No significant gaps identified</div>'}
+      </div>
+    </div>
+  `;
+
+  let qRows = '';
+  const letters28 = ['A','B','C','D'];
+  QUESTIONS.forEach(q => {
+    const given = r.answers ? r.answers[q.id] : null;
+    const correct = given && given !== 'IDK' && given === q.ans;
+    const idk = given === 'IDK';
+    const icon = correct ? '✅' : idk ? '⬜' : '❌';
+    const bg = correct ? '#f0fdf4' : idk ? '#f8fafc' : '#fef2f2';
+    const plainText = q.text.replace(/<[^>]*>/g, '');
+    const givenTxt = given && given !== 'IDK'
+      ? `${given} — ${(q.opts[letters28.indexOf(given)]||given).replace(/<[^>]*>/g, '')}`
+      : given === 'IDK' ? "I don't know" : '–';
+    const corrTxt = `${q.ans} — ${(q.opts[letters28.indexOf(q.ans)]||q.ans).replace(/<[^>]*>/g, '')}`;
+    qRows += `
+      <tr style="background:${bg}">
+        <td style="padding:5px 8px;font-weight:700;text-align:center;border:1px solid #e2e8f0">${q.id}</td>
+        <td style="padding:5px 8px;border:1px solid #e2e8f0">${q.sec}</td>
+        <td style="padding:5px 8px;border:1px solid #e2e8f0;font-size:11px">${plainText.slice(0,55)}${plainText.length>55?'…':''}</td>
+        <td style="padding:5px 8px;text-align:center;border:1px solid #e2e8f0">${icon}</td>
+        <td style="padding:5px 8px;font-size:11px;border:1px solid #e2e8f0;color:${correct?'#14532D':idk?'#94a3b8':'#dc2626'}">${givenTxt}</td>
+        <td style="padding:5px 8px;font-size:11px;border:1px solid #e2e8f0;color:#14532D">${correct?'–':corrTxt}</td>
+      </tr>`;
+  });
+
+  html += `
+    <div style="page-break-before:always;padding-top:20px">
+      <div style="font-size:13px;font-weight:700;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Question by Question Breakdown</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:var(--brand-dark);color:white">
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Q</th>
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Sec</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Question</th>
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Result</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Student Answer</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Correct Answer</th>
+          </tr>
+        </thead>
+        <tbody>${qRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  html += `
+    ${r.tutorComment ? `
+    <div style="margin-top:18px">
+      <div style="margin-bottom:8px;font-size:14px;font-weight:800;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px">Tutor Comments</div>
+      <div style="background:var(--grey-light);border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:var(--text)">${r.tutorComment}</div>
+    </div>` : ''}
+    <div style="margin-top:20px;text-align:center;font-size:11px;color:var(--text-soft)">
+      Prepared by Aim High Tuition. Please speak to your child's tutor about next steps.
+    </div>
+  `;
+
+  app.innerHTML = html;
+  document.getElementById('btn-pr-back').addEventListener('click', () => renderTeacherStudentView(r));
+  document.getElementById('btn-pr-print').addEventListener('click', () => window.print());
+}
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let state = {
+  phase: "cover",
+  student: {},
+  qIndex: 0,
+  answers: {},
+  selected: null,
+  revealed: false,
+  startTime: null,
+};
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById("app");
+  if (state.phase === "cover")   app.innerHTML = renderCover();
+  if (state.phase === "quiz")    app.innerHTML = renderQuiz();
+  if (state.phase === "results") app.innerHTML = renderResults();
+  attachEvents();
+}
+
+function renderCover() {
+  return `
+    <div class="cover-title">Ascend Maths<br>Baseline Assessment</div>
+    <div class="cover-sub">Multiple Choice · 28 questions</div>
+
+    <div class="instr-box">
+      <h3>📋 Instructions</h3>
+      <ul>
+        <li>For each question, select the letter <strong>A, B, C or D</strong> next to your answer.</li>
+        <li>Only select <strong>ONE</strong> answer per question.</li>
+        <li>No calculator.</li>
+        <li>Try every question — have a go!</li>
+      </ul>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>First name</label>
+        <input id="f-name" type="text" placeholder="e.g. Lila" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label>Last name</label>
+        <input id="f-surname" type="text" placeholder="e.g. Ahmed">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Year group</label>
+        <select id="f-year">
+          <option value="">Select...</option>
+          <option>Reception</option>
+          <option>Year 1</option>
+          <option>Year 2</option>
+          <option>Year 3</option>
+          <option>Year 4</option>
+          <option>Year 5</option>
+          <option>Year 6</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>School</label>
+        <input id="f-school" type="text" placeholder="School name">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Teacher</label>
+        <input id="f-teacher" type="text" placeholder="Teacher name">
+      </div>
+      <div class="form-group">
+        <label>Today's date</label>
+        <input id="f-date" type="date" value="${new Date().toISOString().slice(0,10)}">
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn-start">Let's go! ⭐</button>
+    <div style="text-align:center;margin-top:14px">
+      <button id="btn-teacher-mode" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 8px;">🔒 Teacher Mode</button>
+    </div>
+  `;
+}
+
+function renderQuiz() {
+  const q = QUESTIONS[state.qIndex];
+  const total = QUESTIONS.length;
+  const pct = Math.round(((state.qIndex) / total) * 100);
+  const letters = ["A","B","C","D"];
+  const secMeta = SECTIONS[q.sec];
+  // Layout: 4 opts = 2x2 grid, 3 = three-col, 2 = two-col
+  const layout = q.opts.length === 4 ? "four-col" : q.opts.length === 3 ? "three-col" : "two-col";
+
+  let html = `
+    <div class="progress-wrap">
+      <div class="progress-bar" style="width:${pct}%"></div>
+    </div>
+    <div class="progress-label">Question ${state.qIndex + 1} of ${total}</div>
+  `;
+
+  // Checkpoint message
+  if (q.checkpoint && !state.revealed) {
+    html += `<div class="checkpoint"><span class="emoji">${q.checkpoint.slice(-2)}</span>${q.checkpoint.slice(0,-2).trim()}</div>`;
+  }
+
+  html += `
+    <div class="section-badge" style="background:${secMeta.color}">
+      ${q.sec} · ${secMeta.name}
+    </div>
+    <div class="q-number">Question ${q.id}</div>
+    <div class="q-text">${q.text}</div>
+  `;
+
+  if (q.display) {
+    html += `<div class="q-display">${q.display}</div>`;
+  }
+  if (q.hint) {
+    html += `<div class="q-hint">💡 ${q.hint}</div>`;
+  }
+
+  // Options
+  html += `<div class="options ${layout}">`;
+  q.opts.forEach((opt, i) => {
+    const letter = letters[i];
+    const cls = (letter === state.selected) ? "selected" : "";
+    html += `
+      <button class="opt-btn ${cls}" data-letter="${letter}">
+        <span class="opt-letter">${letter}</span>
+        ${opt}
+      </button>
+    `;
+  });
+  html += `</div>`;
+
+  const isLast = state.qIndex === total - 1;
+  const btnLabel = isLast ? "See my results 🎉" : "Next question →";
+
+  // IDK button only shows before an answer is picked
+  if (!state.selected) {
+    html += `<button class="btn-idk" id="btn-idk">🤷 I don't know — skip this one</button>`;
+  }
+
+  html += `<button class="btn-next" id="btn-next" ${!state.selected ? "disabled" : ""}>${btnLabel}</button>`;
+  return html;
+}
+
+function renderResults() {
+  // Calculate scores
+  let correctCount = 0;
+  const secScores = { A:0, B:0, C:0, D:0, E:0, F:0, G:0, H:0 };
+  QUESTIONS.forEach(q => {
+    if (state.answers[q.id] === q.ans) {
+      correctCount++;
+      secScores[q.sec]++;
+    }
+  });
+
+  const secA = secScores["A"];
+  const placement = getPlacement(correctCount, secA);
+  const summary = buildSummary(state.student, correctCount, secScores, placement);
+
+  // Student sees celebration only — no group or RAG shown
+  const stars = correctCount >= 21 ? "🌟🌟🌟" : correctCount >= 12 ? "⭐⭐" : "⭐";
+  const msg = correctCount >= 21
+    ? "Fantastic work! You should be really proud of yourself!"
+    : correctCount >= 12
+    ? "Great effort! You worked really hard today!"
+    : "Well done for trying every question — that takes courage!";
+
+  let html = `
+    <div style="text-align:center;padding:32px 0 20px">
+      <div style="font-size:64px;line-height:1;margin-bottom:16px">${stars}</div>
+      <div style="font-size:32px;font-weight:900;color:var(--brand-dark);margin-bottom:8px">
+        Well done, ${state.student.name.split(" ")[0]}!
+      </div>
+      <div style="font-size:18px;color:var(--text-soft);margin-bottom:20px">${msg}</div>
+      <div style="font-size:48px;font-weight:900;color:var(--brand-dark)">
+        ${correctCount}<span style="font-size:22px;font-weight:400;color:var(--text-soft)"> out of 28</span>
+      </div>
+    </div>
+
+    <div style="background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px 20px;text-align:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;color:var(--brand-dark)">
+        🎉 You've finished the assessment!
+      </div>
+      <div style="font-size:14px;color:var(--text-soft);margin-top:6px">
+        Your teacher will look at your results and let you know what's next.
+      </div>
+    </div>
+
+    <div class="section-breakdown">
+      <h3>How you did by topic</h3>
+  `;
+
+  Object.entries(secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    html += `
+      <div class="sec-row">
+        <div class="sec-letter" style="background:${SECTIONS[sec].color}">${sec}</div>
+        <div class="sec-info">
+          <div class="sec-name">${SECTIONS[sec].name}</div>
+          <div class="sec-bar-wrap">
+            <div class="sec-bar ${cls}" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="sec-score">${sc}/${max}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>
+    <div id="submit-status" class="submit-status sending">⏳ Sending results to your teacher...</div>
+  `;
+
+  // Auto-submit with full placement data — teacher sees everything
+  setTimeout(() => submitResults(correctCount, secScores, summary, placement), 800);
+
+  return html;
+}
+
+// ── EVENTS ───────────────────────────────────────────────────────────────────
+function attachEvents() {
+  // Cover start
+  const btnStart = document.getElementById("btn-start");
+  if (btnStart) {
+    btnStart.addEventListener("click", () => {
+      const name    = document.getElementById("f-name").value.trim();
+      const surname = document.getElementById("f-surname").value.trim();
+      const year    = document.getElementById("f-year").value;
+      const school  = document.getElementById("f-school").value.trim();
+      const teacher = document.getElementById("f-teacher").value.trim();
+      const date    = document.getElementById("f-date").value;
+      if (!name || !year) {
+        alert("Please enter your first name and year group to start.");
+        return;
+      }
+      state.student = { name: name + (surname ? " " + surname : ""), year, school, teacher, date };
+      state.startTime = Date.now();
+      state.phase = "quiz";
+      state.qIndex = 0;
+      render();
+    });
+  }
+
+  // I don't know button
+  const btnIdk = document.getElementById("btn-idk");
+  if (btnIdk) {
+    btnIdk.addEventListener("click", () => {
+      const q = QUESTIONS[state.qIndex];
+      state.answers[q.id] = "IDK"; // record as skipped
+      state.qIndex++;
+      state.selected = null;
+      state.revealed = false;
+      if (state.qIndex >= QUESTIONS.length) {
+        state.phase = "results";
+      }
+      render();
+    });
+  }
+
+  // Option buttons
+  document.querySelectorAll(".opt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selected = btn.dataset.letter;
+      render();
+    });
+  });
+
+  // Next button — records answer and moves straight on, no reveal
+  const btnNext = document.getElementById("btn-next");
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      const q = QUESTIONS[state.qIndex];
+      state.answers[q.id] = state.selected;
+      state.qIndex++;
+      state.selected = null;
+      if (state.qIndex >= QUESTIONS.length) {
+        state.phase = "results";
+      }
+      render();
+    });
+  }
+
+  // Teacher mode button
+  const btnTeacher = document.getElementById("btn-teacher-mode");
+  if (btnTeacher) {
+    btnTeacher.addEventListener("click", () => {
+      renderTeacherPin();
+    });
+  }
+}
+
+// ── SUBMIT TO GOOGLE SHEETS ──────────────────────────────────────────────────
+function submitResults(total, secScores, summary, placement) {
+  const elapsedMs  = Date.now() - (state.startTime || Date.now());
+  const mins       = Math.floor(elapsedMs / 60000);
+  const secs       = Math.floor((elapsedMs % 60000) / 1000);
+  const timeTaken  = `${mins}m ${secs}s`;
+
+  const payload = {
+    name:        state.student.name,
+    year:        state.student.year,
+    school:      state.student.school,
+    teacher:     state.student.teacher,
+    date:        state.student.date,
+    timestamp:   new Date().toISOString(),
+    assessment:  "Ascend",
+    timeTaken:   timeTaken,
+    total:       total,
+    rag:         placement.rag,
+    placement:   placement.group,
+    teacherNote: placement.teacherNote,
+    secA:        secScores.A,
+    secB:        secScores.B,
+    secC:        secScores.C,
+    secD:        secScores.D,
+    secE:        secScores.E,
+    secF:        secScores.F,
+    secG:        secScores.G,
+    secH:        secScores.H,
+    summary:     summary,
+    answers:     JSON.stringify(state.answers),
+  };
+
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    document.getElementById("submit-status").className = "submit-status error";
+    document.getElementById("submit-status").textContent =
+      "⚠️ Results not sent — Apps Script URL not configured yet. Score saved locally.";
+    return;
+  }
+
+  // Cache locally too, so Teacher Mode works even if this device goes offline later
+  saveResultsToStore({
+    timestamp: payload.timestamp,
+    name: state.student.name,
+    year: state.student.year,
+    school: state.student.school,
+    teacher: state.student.teacher,
+    date: state.student.date,
+    total: total,
+    rag: placement.rag,
+    placement: placement.group,
+    teacherNote: placement.teacherNote,
+    timeTaken: timeTaken,
+    secScores: secScores,
+    answers: state.answers,
+    tutorComment: "",
+  });
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).then(() => {
+    const el = document.getElementById("submit-status");
+    if (el) {
+      el.className = "submit-status sent";
+      el.textContent = "✅ Results sent to your teacher!";
+    }
+  }).catch(() => {
+    const el = document.getElementById("submit-status");
+    if (el) {
+      el.className = "submit-status error";
+      el.textContent = "⚠️ Could not send results. Please tell your teacher.";
+    }
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

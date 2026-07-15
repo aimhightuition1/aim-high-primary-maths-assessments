@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aim High Tuition — Master Maths Baseline</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand:      #4C1D95;
+    --brand-dark: #2E1065;
+    --gold:       #C8860A;
+    --gold-light: #FFF8E7;
+    --gold-mid:   #FFE9A0;
+    --green:      #1B5E20;
+    --green-light:#E8F5E9;
+    --amber:      #E65100;
+    --amber-light:#FFF3E0;
+    --red-c:      #B71C1C;
+    --red-light:  #FFEBEE;
+    --grey-light: #F5F5F5;
+    --grey-mid:   #E0E0E0;
+    --text:       #1A1A1A;
+    --text-soft:  #555;
+    --white:      #FFFFFF;
+    --radius:     12px;
+    --shadow:     0 4px 20px rgba(0,0,0,0.10);
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--gold-light);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── HEADER ── */
+  header {
+    width: 100%;
+    background: var(--brand);
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-star { font-size: 28px; }
+  .logo-text { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; }
+  .logo-sub  { font-size: 11px; opacity: 0.8; }
+
+  /* ── MAIN CARD ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 640px;
+    margin: 24px 16px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--grey-mid);
+    border-radius: 99px;
+    height: 10px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    background: linear-gradient(90deg, var(--brand), var(--gold));
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-soft);
+    text-align: right;
+    margin-bottom: 20px;
+  }
+
+  /* ── SECTION BADGE ── */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  /* ── QUESTION ── */
+  .q-number {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .q-hint {
+    font-size: 14px;
+    color: var(--brand);
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .q-display {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--brand-dark);
+    text-align: center;
+    margin: 12px 0 24px;
+    background: var(--gold-light);
+    border-radius: 12px;
+    padding: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .options.two-col   { grid-template-columns: 1fr 1fr; }
+  .options.three-col { grid-template-columns: 1fr 1fr 1fr; }
+  .options.four-col  { grid-template-columns: 1fr 1fr; }
+
+  .opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid var(--grey-mid);
+    border-radius: 10px;
+    background: var(--grey-light);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.15s;
+    color: var(--text);
+    width: 100%;
+  }
+  .opt-btn:hover { border-color: var(--brand); background: var(--gold-light); }
+  .opt-btn.selected {
+    border-color: var(--brand);
+    background: var(--gold-mid);
+    font-weight: 700;
+  }
+  .opt-btn.correct {
+    border-color: var(--green);
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .opt-btn.wrong {
+    border-color: var(--red-c);
+    background: var(--red-light);
+    color: var(--red-c);
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
+  .opt-letter {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .opt-btn.correct .opt-letter { background: var(--green); }
+  .opt-btn.wrong   .opt-letter { background: var(--red-c); }
+
+  /* ── I DON'T KNOW BUTTON ── */
+  .btn-idk {
+    width: 100%;
+    padding: 11px;
+    background: white;
+    color: var(--text-soft);
+    border: 2px dashed var(--grey-mid);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: all 0.15s;
+  }
+  .btn-idk:hover { border-color: var(--text-soft); color: var(--text); }
+
+  /* ── NEXT BUTTON ── */
+  .btn-next {
+    width: 100%;
+    padding: 16px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-next:hover { background: var(--brand-dark); }
+  .btn-next:disabled { background: var(--grey-mid); color: var(--text-soft); cursor: not-allowed; }
+
+  /* ── CHECKPOINT ── */
+  .checkpoint {
+    background: var(--gold-mid);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+  .checkpoint .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+
+  /* ── COVER PAGE ── */
+  .cover-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--brand-dark);
+    margin-bottom: 6px;
+  }
+  .cover-sub {
+    font-size: 15px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+  }
+  .instr-box {
+    background: var(--gold-light);
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .instr-box h3 {
+    color: var(--brand-dark);
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .instr-box li {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 6px;
+    margin-left: 16px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .form-group input, .form-group select {
+    padding: 10px 12px;
+    border: 2px solid var(--grey-mid);
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--brand); }
+
+  /* ── RESULTS PAGE ── */
+  .result-hero {
+    text-align: center;
+    padding: 24px 0 16px;
+  }
+  .result-emoji { font-size: 64px; line-height: 1; margin-bottom: 12px; }
+  .result-score {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-score.green { color: var(--green); }
+  .result-score.amber { color: var(--amber); }
+  .result-score.red-c { color: var(--red-c); }
+  .rag-pill {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rag-pill.green { background: var(--green-light); color: var(--green); }
+  .rag-pill.amber { background: var(--amber-light); color: var(--amber); }
+  .rag-pill.red-c { background: var(--red-light);   color: var(--red-c); }
+  .placement-box {
+    background: var(--brand);
+    color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .placement-box .label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
+  .placement-box .value { font-size: 22px; font-weight: 900; }
+
+  .section-breakdown {
+    margin-top: 20px;
+  }
+  .section-breakdown h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .sec-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .sec-letter {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .sec-info { flex: 1; }
+  .sec-name { font-size: 13px; font-weight: 600; }
+  .sec-bar-wrap { height: 8px; background: var(--grey-mid); border-radius: 99px; margin-top: 4px; overflow: hidden; }
+  .sec-bar { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+  .sec-bar.green { background: var(--green); }
+  .sec-bar.amber { background: var(--amber); }
+  .sec-bar.red-c { background: var(--red-c); }
+  .sec-score { font-size: 13px; font-weight: 700; min-width: 36px; text-align: right; }
+
+  .summary-box {
+    background: var(--grey-light);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .submit-status {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .submit-status.sending { background: var(--gold-light); color: var(--brand); }
+  .submit-status.sent    { background: var(--green-light); color: var(--green); }
+  .submit-status.error   { background: var(--red-light);   color: var(--red-c); }
+
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 3px;
+    font-size: 0.9em;
+    line-height: 1.1;
+    position: relative;
+    top: 0.05em;
+  }
+  .frac .num { padding: 0 4px 2px; border-bottom: 1.5px solid currentColor; }
+  .frac .den { padding: 2px 4px 0; }
+
+  @media (max-width: 480px) {
+    .card { padding: 20px 16px; margin: 12px 10px; }
+    .q-text { font-size: 18px; }
+    .q-display { font-size: 32px; }
+    .form-row { grid-template-columns: 1fr; }
+    .options.two-col { grid-template-columns: 1fr; }
+    .options.three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-star">🏆</div>
+  <div>
+    <div class="logo-text">AIM HIGH TUITION</div>
+    <div class="logo-sub">Master Maths Baseline Assessment</div>
+  </div>
+</header>
+
+<div class="card" id="app"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Paste your Google Apps Script Web App URL here after deploying
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbSgyAOFsQb-7iuvsdyC-WbNGU-SzFmSFcFpQkZnkzdzk3dQjZYEaBbQlOXXUCmWtuZw/exec";
+
+// ── QUESTION DATA ────────────────────────────────────────────────────────────
+function frac(num, den) {
+  return `<span class="frac"><span class="num">${num}</span><span class="den">${den}</span></span>`;
+}
+
+const SECTIONS = {
+  A: { name: "Place Value and Number",              color: "#4C1D95" },
+  B: { name: "Multiplication and Division",         color: "#1565C0" },
+  C: { name: "Fractions, Decimals and Percentages", color: "#2E7D32" },
+  D: { name: "Geometry and Measurement",            color: "#AD1457" },
+  E: { name: "Statistics and Word Problems",        color: "#00695C" },
+  F: { name: "Fractions with Different Denominators", color: "#6A1B9A" },
+  G: { name: "Order of Operations & Time",          color: "#E65100" },
+  H: { name: "Challenge Questions",                 color: "#37474F" },
+};
+
+// Teacher-facing notes on common wrong-answer reasoning, shown only in Teacher Mode
+const MISCONCEPTIONS = {
+  1: "The 7 is in the hundreds place: 7×100=700. Common error: A=treats it as units; B=treats it as tens; D=treats it as thousands.",
+  2: "Common error: B=drops hundred thousands; D=adds extra zeros.",
+  3: "847,362 is below the 850,000 midpoint, so it rounds DOWN to 800,000. Common error: B=rounds to nearest 50,000; C=rounds up past the midpoint incorrectly; D=rounds to nearest 1,000.",
+  4: "Common error: C=subtraction slip; B/D=rounding errors.",
+  5: "Common error: C=skips a step; D=inconsistent jump size.",
+  6: "Common error: B=wrong negative order; D=misplaces −3.",
+  7: "Common error: A=8×2; C=8×3; D=8×4 instead of 8×8.",
+  8: "Common error: A=2×3; C=2×2×4; D=2×2 instead of 2×2×2.",
+  9: "Factor pairs of 30: 1×30, 2×15, 3×10, 5×6 = 4 pairs.",
+  10: "Common error: confusing odd numbers with primes, or miscounting the digit sum.",
+  11: "47×6=282 (40×6=240, 7×6=42, 240+42=282). Common error: carrying or adding mistakes in the tens column.",
+  12: "Common error: A/C=digit error in the tens; D=wrong quotient.",
+  13: "347÷15 = 23 remainder 2, so 24 minibuses are needed — must round up, not down.",
+  14: "Common error: A=¼ of 60; B=wrong numerator used; D=¾ of 60 rounding error.",
+  15: "3/4 = 9/12. Common error: A=copies the 3; B=adds 5; D=halves instead.",
+  16: "7/8 = 0.875 = 87.5% — all three are equal. Common error: forgetting the percentage or decimal form.",
+  17: "9 ÷ 20 = 0.45. Common error: A=inserts extra digits; B=wrong place value; D=uses 9/10 instead.",
+  18: "Common error: assuming a longer decimal (0.65) is bigger than a shorter one (0.7).",
+  19: "10% of 350 = 35, so 20% = 70. Common error: A=only finds 10%; D=moves the decimal the wrong way.",
+  20: "Common error: B=divides km by 10 instead of ×1000; C=wrong decimal conversion for ml.",
+  21: "Area of a triangle = (base × height) ÷ 2 = (10×6)÷2 = 30. Common error: A=forgets to halve.",
+  22: "Angles in a triangle sum to 180°: 180−54−73=53. Common error: A=adds instead of subtracting.",
+  23: "Angles in a quadrilateral sum to 360°: 360−95−110−75=80. Common error: A=subtraction slip.",
+  24: "A is 3 units left of the line x=5, so its reflection is 3 units to the right: (8,3). The y-coordinate doesn't change. Common error: B/D change the wrong coordinate; C stops at the mirror line itself instead of going the same distance beyond it.",
+  25: "Volume = length × width × height = 5×4×3 = 60. Common error: A=adds instead of multiplying.",
+  26: "4,836 ÷ 12 = 403. Common error: digit errors in the quotient.",
+  27: "Mean = total ÷ count = (8+14+6+10+12)÷5 = 50÷5 = 10. Common error: C/D=wrong division.",
+  28: "40 ÷ (3+5) = 5 per part; red = 3×5 = 15. Common error: A=uses 3/8 incorrectly; D=uses 5/8 instead.",
+  29: "18.50 × 32 = 592. Common error: carrying mistakes in the multiplication.",
+  30: "Common denominator 12: 4/12+3/12=7/12. Common error: adding numerators and denominators separately.",
+  31: "Common denominator 12: 9/12−2/12=7/12. Common error: wrong conversion to twelfths.",
+  32: "3/5=60%, 65%=0.65, 0.7=70%=7/10 — order is 60%, 65%, 70%, 70% (0.7 and 7/10 are tied).",
+  33: "Multiplication happens before addition: 4×5=20, then 3+20=23. Common error: adding 3+4 first.",
+  34: "Brackets are worked out first: 6+2=8, then 8×3=24. Common error: ignoring the brackets.",
+  35: "1 hour 50 minutes after 14:35: add 1 hour (15:35), then 50 minutes, carrying over the hour (16:25).",
+  36: "4n=24, so n=6. Common error: wrong rearrangement of the equation.",
+  37: "36 × 202 = 7,272, remainder 12. Common error: ignoring the remainder or a wrong quotient digit.",
+  38: "35 ÷ (2+3) = 7 per part; blue = 3×7 = 21. Common error: using 2/5 of 35 instead of the correct ratio share.",
+};
+
+function numberBoxes(items) {
+  return `<div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:8px 0">
+    ${items.map(v => `<div style="min-width:64px;padding:10px 14px;background:white;border:3px solid #4C1D95;border-radius:10px;font-size:22px;font-weight:900;color:#4C1D95;text-align:center">${v}</div>`).join('')}
+  </div>`;
+}
+
+const QUESTIONS = [
+  // A — Place Value and Number (Q1-6)
+  { id:1, sec:"A", text:"What is the value of the digit 7 in this number?", display:"4,732",
+    opts:["7","70","700","7,000"], ans:"C" },
+  { id:2, sec:"A", text:"Write 206,050 in words.",
+    opts:["Two hundred and six thousand and fifty","Twenty-six thousand and fifty","Two million and sixty-five","Two hundred and sixty thousand and fifty"], ans:"A" },
+  { id:3, sec:"A", text:"Round this number to the nearest 100,000.", display:"847,362",
+    opts:["800,000","850,000","900,000","847,000"], ans:"A" },
+  { id:4, sec:"A", text:"Work out:", display:"<span style=\"font-size:0.7em;white-space:nowrap\">1,200,000 − 550,000 = ?</span>",
+    opts:["650,000","660,000","750,000","640,000"], ans:"A" },
+  { id:5, sec:"A", text:"Fill in the missing numbers.", display:numberBoxes(["100,000","200,000","300,000","?","?"]),
+    opts:["400,000 and 500,000","300,000 and 400,000","500,000 and 600,000","400,000 and 600,000"], ans:"A" },
+  { id:6, sec:"A", text:"Order these from smallest to largest.", display:numberBoxes(["−15","8","−3","0","−20","12"]),
+    opts:["−20, −15, −3, 0, 8, 12","−15, −20, −3, 0, 8, 12","12, 8, 0, −3, −15, −20","−20, −15, 0, −3, 8, 12"], ans:"A" },
+
+  // B — Multiplication and Division (Q7-13)
+  { id:7, sec:"B", text:"What is 8 squared?", display:"8² = ?",
+    opts:["16","64","24","32"], ans:"B" },
+  { id:8, sec:"B", text:"What is 2 cubed?", display:"2³ = ?",
+    opts:["6","8","16","4"], ans:"B" },
+  { id:9, sec:"B", text:"Find all the factor pairs of 30. How many pairs are there?",
+    opts:["3 pairs","4 pairs","5 pairs","6 pairs"], ans:"B" },
+  { id:10, sec:"B", text:"Is 97 a prime number?",
+    opts:["Yes, because it has no factors other than 1 and itself","No, because it is odd","No, because 9+7=16","Yes, because it ends in 7"], ans:"A" },
+  { id:11, sec:"B", text:"Work out:", display:"47 × 6 = ?",
+    opts:["282","272","292","232"], ans:"A" },
+  { id:12, sec:"B", text:"Short division:", display:"738 ÷ 6 = ?",
+    opts:["122","123","124","132"], ans:"B" },
+  { id:13, sec:"B", text:"347 children need to travel in minibuses of 15. How many minibuses are needed?",
+    opts:["22","23","24","25"], ans:"C" },
+
+  // C — Fractions, Decimals and Percentages (Q14-19)
+  { id:14, sec:"C", text:"What is this fraction of 60?", display:frac(3,4)+" of 60 = ?",
+    opts:["15","36","45","40"], ans:"C" },
+  { id:15, sec:"C", text:"Find the missing number.", display:frac("?",12)+" = "+frac(3,4),
+    opts:["3","8","9","6"], ans:"C" },
+  { id:16, sec:"C", text:"Which of the following are equal to "+frac(7,8)+"? (Choose the best answer.)",
+    opts:["0.875 only","0.875 and 87.5%","0.875, 87.5% and 7/8","87.5% only"], ans:"B" },
+  { id:17, sec:"C", text:"Write "+frac(9,20)+" as a decimal.",
+    opts:["9.20","0.920","0.45","0.9"], ans:"C" },
+  { id:18, sec:"C", text:"Which is larger: 0.7 or 0.65?",
+    opts:["0.7","0.65","They are equal","Cannot tell"], ans:"A" },
+  { id:19, sec:"C", text:"What is 20% of 350?",
+    opts:["35","60","70","700"], ans:"C",
+    checkpoint:"Halfway there! Keep up the great thinking! 🌟" },
+
+  // D — Geometry and Measurement (Q20-26)
+  { id:20, sec:"D", text:"Convert:", display:"3.5 km = ? m   and   2,750 ml = ? litres",
+    opts:["3,500 m and 2.75 litres","350 m and 2.75 litres","3,500 m and 27.5 litres","35,000 m and 2.75 litres"], ans:"A",
+    checkpoint:"Some of the geometry coming up is proper Year 6 stretch content — take your time, and it's completely fine if a few feel new! 💪" },
+  { id:21, sec:"D", text:"Find the area of a triangle with base 10 cm and height 6 cm.",
+    opts:["60 cm²","30 cm²","16 cm²","20 cm²"], ans:"B" },
+  { id:22, sec:"D", text:"A triangle has angles of 54° and 73°. What is the third angle?",
+    opts:["127°","43°","53°","63°"], ans:"C" },
+  { id:23, sec:"D", text:"The angles in a quadrilateral are 95°, 110° and 75°. What is the fourth angle?",
+    opts:["70°","80°","90°","100°"], ans:"B" },
+  { id:24, sec:"D", text:"Point A is at (2, 3). It is reflected in the dashed line x = 5. What are the new coordinates?",
+    display:(function(){
+      const cell=20, ox=10, oy=210;
+      let grid='';
+      for(let i=0;i<=10;i++){
+        grid += `<line x1="${ox+i*cell}" y1="10" x2="${ox+i*cell}" y2="210" stroke="#e2e8f0" stroke-width="1"/>`;
+        grid += `<line x1="10" y1="${210-i*cell}" x2="210" y2="${210-i*cell}" stroke="#e2e8f0" stroke-width="1"/>`;
+      }
+      const ax = ox + 2*cell, ay = oy - 3*cell;
+      const mx = ox + 5*cell;
+      return `<div style="display:flex;justify-content:center;padding:10px 0">
+        <svg width="220" height="220" viewBox="0 0 220 220">
+          ${grid}
+          <line x1="10" y1="210" x2="210" y2="210" stroke="#333" stroke-width="2"/>
+          <line x1="10" y1="10" x2="10" y2="210" stroke="#333" stroke-width="2"/>
+          <line x1="${mx}" y1="10" x2="${mx}" y2="210" stroke="#AD1457" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="${mx+4}" y="20" font-size="12" fill="#AD1457" font-weight="700">x = 5</text>
+          <circle cx="${ax}" cy="${ay}" r="6" fill="#4C1D95"/>
+          <text x="${ax+8}" y="${ay-6}" font-size="13" font-weight="800" fill="#4C1D95">A (2,3)</text>
+        </svg>
+      </div>`;
+    })(),
+    opts:["(8, 3)","(2, 8)","(5, 3)","(8, 8)"], ans:"A" },
+  { id:25, sec:"D", text:"A cuboid has these dimensions. What is its volume?",
+    display:`<div style="display:flex;justify-content:center;padding:10px 0">
+  <svg width="220" height="160" viewBox="0 0 220 160">
+    <polygon points="40,50 140,50 168,22 68,22" fill="#FFE9A0" stroke="#4C1D95" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="40" y="50" width="100" height="60" fill="#FFF3E0" stroke="#4C1D95" stroke-width="3"/>
+    <polygon points="140,50 168,22 168,82 140,110" fill="#F5D98A" stroke="#4C1D95" stroke-width="3" stroke-linejoin="round"/>
+    <text x="90" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#4C1D95">5 cm</text>
+    <text x="18" y="84" text-anchor="middle" font-size="14" font-weight="800" fill="#4C1D95">3 cm</text>
+    <text x="158" y="38" text-anchor="middle" font-size="13" font-weight="800" fill="#4C1D95">4 cm</text>
+  </svg>
+</div>`,
+    opts:["47 cm³","60 cm³","35 cm³","12 cm³"], ans:"B" },
+  { id:26, sec:"D", text:"Long division:", display:"4,836 ÷ 12 = ?",
+    opts:["403","423","402","413"], ans:"A" },
+
+  // E — Statistics and Word Problems (Q27-29)
+  { id:27, sec:"E", text:"Find the mean of:", display:"8,  14,  6,  10,  12",
+    opts:["9","10","11","50"], ans:"B" },
+  { id:28, sec:"E", text:"A bag has red and blue counters in ratio 3:5. There are 40 counters in total. How many red counters?",
+    opts:["12","15","20","24"], ans:"B" },
+  { id:29, sec:"E", text:"A school trip costs £18.50 per child. 32 children go. What is the total cost?",
+    opts:["£572","£582","£592","£596"], ans:"C" },
+
+  // F — Fractions with Different Denominators (Q30-32)
+  { id:30, sec:"F", text:"Work out:", display:frac(1,3)+" + "+frac(1,4),
+    opts:[frac(2,7),frac(7,12),frac(5,12),frac(1,6)], ans:"B" },
+  { id:31, sec:"F", text:"Work out:", display:frac(3,4)+" − "+frac(1,6),
+    opts:[frac(2,3),frac(1,2),frac(7,12),frac(5,12)], ans:"C" },
+  { id:32, sec:"F", text:"Put in order, smallest to largest:", display:frac(3,5)+",  65%,  0.7,  "+frac(7,10),
+    opts:[
+      frac(3,5)+", 65%, 0.7, "+frac(7,10),
+      frac(3,5)+", 65%, "+frac(7,10)+", 0.7",
+      "65%, "+frac(3,5)+", 0.7, "+frac(7,10),
+      "0.7, 65%, "+frac(3,5)+", "+frac(7,10)
+    ], ans:"A",
+    checkpoint:"Nearly at the last stretch! Great focus! 🎉" },
+
+  // G — Order of Operations & Time (Q33-35)
+  { id:33, sec:"G", text:"Work out:", display:"3 + 4 × 5 = ?",
+    opts:["23","35","20","12"], ans:"A" },
+  { id:34, sec:"G", text:"Work out:", display:"(6 + 2) × 3 = ?",
+    opts:["24","12","30","8"], ans:"A" },
+  { id:35, sec:"G", text:"A train leaves at 14:35 and takes 1 hour 50 minutes to arrive. What time does it arrive?",
+    opts:["16:25","16:15","15:85","16:35"], ans:"A" },
+
+  // H — Challenge Questions (Q36-38)
+  { id:36, sec:"H", text:"Solve for n:", display:"4n + 7 = 31",
+    opts:["n = 6","n = 9","n = 5","n = 8"], ans:"A",
+    checkpoint:"Challenge questions ahead — have a go, they're meant to stretch you! 🏆" },
+  { id:37, sec:"H", text:"Long division:", display:"7,284 ÷ 36 = ?",
+    opts:["202 r 12","201","203","202"], ans:"A" },
+  { id:38, sec:"H", text:"Red and blue counters are in ratio 2:3. There are 35 counters. How many are blue?",
+    opts:["14","21","15","20"], ans:"B" },
+];
+
+// Correct answers map
+const ANSWER_KEY = {};
+QUESTIONS.forEach(q => { ANSWER_KEY[q.id] = q.ans; });
+
+// Section max scores
+const SEC_MAX = { A:6, B:7, C:6, D:7, E:3, F:3, G:3, H:3 };
+
+// ── PLACEMENT LOGIC ──────────────────────────────────────────────────────────
+function getPlacement(total, secA) {
+  if (total >= 29 && secA >= 5) return {
+    rag: "GREEN", cls: "green", emoji: "🏆",
+    group: "Master 2 / SATs Track",
+    detail: "Strong score with secure place value knowledge.",
+    teacherNote: "Score 29+, Sec A " + secA + "/6. Strong — Master 2 / SATs track. Confirm with Check-In Week 2."
+  };
+  if (total >= 29 && secA <= 4) return {
+    rag: "GREEN", cls: "green", emoji: "🏆",
+    group: "Master 1",
+    detail: "Strong overall score but place value needs consolidation.",
+    teacherNote: "Score 29+ but Sec A only " + secA + "/6. Place in Master 1 — number gaps to address despite strong overall score."
+  };
+  if (total >= 20 && secA >= 4) return {
+    rag: "AMBER", cls: "amber", emoji: "⭐",
+    group: "Master 2",
+    detail: "Developing well. Place value knowledge is secure.",
+    teacherNote: "Score 20-28, Sec A " + secA + "/6. Place in Master 2. Use QLA to target gaps."
+  };
+  if (total >= 20 && secA <= 3) return {
+    rag: "AMBER", cls: "amber", emoji: "⭐",
+    group: "Master 1",
+    detail: "Developing. Place value needs more support.",
+    teacherNote: "Score 20-28, Sec A only " + secA + "/6. Place in Master 1."
+  };
+  if (secA <= 2 && total <= 10) return {
+    rag: "RED", cls: "red-c", emoji: "💪",
+    group: "Consider Ignite 2",
+    detail: "Significant gaps. Verbal check recommended immediately.",
+    teacherNote: "Score 0-19, Sec A " + secA + "/6 (≤2). Significant gaps — verbal check recommended immediately. Contact parent."
+  };
+  return {
+    rag: "RED", cls: "red-c", emoji: "💪",
+    group: "Consider Ignite 2",
+    detail: "Gaps identified across several areas.",
+    teacherNote: "Score 0-19, Sec A " + secA + "/6. Consider Ignite 2 — gaps identified. Contact parent."
+  };
+}
+
+function getSectionRag(score, max) {
+  const pct = score / max;
+  if (pct >= 0.8) return "green";
+  if (pct >= 0.5) return "amber";
+  return "red-c";
+}
+
+function buildSummary(student, total, secScores, placement) {
+  const strong = [], weak = [];
+  Object.entries(secScores).forEach(([sec, sc]) => {
+    const pct = sc / SEC_MAX[sec];
+    if (pct >= 0.8) strong.push(SECTIONS[sec].name);
+    else if (pct < 0.5) weak.push(SECTIONS[sec].name);
+  });
+  const secA = secScores["A"];
+
+  let text = `${student.name} scored ${total}/38 on the Master Baseline (${student.year}, ${student.school}). `;
+  text += `PLACEMENT: ${placement.group}. ${placement.teacherNote} `;
+  if (strong.length) text += `Strong sections: ${strong.join(", ")}. `;
+  if (weak.length)   text += `Weak sections needing support: ${weak.join(", ")}. `;
+  text += `Section A (Place Value and Number): ${secA}/6. `;
+  if (secA <= 2 && total <= 10) text += `Verbal check strongly recommended before first lesson. `;
+  return text;
+}
+
+// ── TEACHER MODE ─────────────────────────────────────────────────────────────
+const TEACHER_PIN = "2468";
+const RESULTS_STORE_KEY = "aimhigh_master_all_results";
+let teacherResultsCache = null; // null = not fetched yet / fetch failed, use local fallback
+let dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+
+function saveResultsToStore(studentData) {
+  try {
+    const all = getStoredResults();
+    all.unshift(studentData); // newest first
+    if (all.length > 50) all.splice(50);
+    localStorage.setItem(RESULTS_STORE_KEY, JSON.stringify(all));
+  } catch(e) {}
+}
+
+function getStoredResults() {
+  try {
+    const raw = localStorage.getItem(RESULTS_STORE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function formatDateNice(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function normalizeRemoteResult(row) {
+  // Prefer the raw "Answers JSON" column (exact letters the student picked)
+  // for full per-question review. Falls back to correctness-only reconstruction
+  // for any older rows submitted before this column existed.
+  let answers = null;
+  if (row["Answers JSON"]) {
+    try { answers = JSON.parse(row["Answers JSON"]); } catch(e) { answers = null; }
+  }
+  if (!answers) {
+    answers = {};
+    QUESTIONS.forEach(q => {
+      const isCorrect = Number(row["Q" + q.id]) === 1;
+      answers[q.id] = isCorrect ? q.ans : "✗";
+    });
+  }
+
+  return {
+    timestamp:   row["Timestamp"],
+    name:        row["Name"],
+    year:        row["Year"],
+    school:      row["School"],
+    teacher:     row["Teacher"],
+    date:        row["Date"],
+    total:       Number(row["Total"]) || 0,
+    rag:         row["RAG"],
+    placement:   row["Group Placed"],
+    teacherNote: row["Teacher Action Note"],
+    timeTaken:   row["Time Taken"],
+    tutorComment: row["Tutor Comments"] || "",
+    secScores: {
+      A: Number(row["Sec A (6)"]) || 0,
+      B: Number(row["Sec B (7)"]) || 0,
+      C: Number(row["Sec C (6)"]) || 0,
+      D: Number(row["Sec D (7)"]) || 0,
+      E: Number(row["Sec E (3)"]) || 0,
+      F: Number(row["Sec F (3)"]) || 0,
+      G: Number(row["Sec G (3)"]) || 0,
+      H: Number(row["Sec H (3)"]) || 0,
+    },
+    answers: answers,
+  };
+}
+
+function fetchRemoteResults() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    return Promise.resolve(null);
+  }
+  return fetch(APPS_SCRIPT_URL)
+    .then(res => res.json())
+    .then(rows => rows.map(normalizeRemoteResult))
+    .catch(() => null);
+}
+
+function saveTutorComment(r) {
+  const statusEl = document.getElementById("comment-save-status");
+  const comment = document.getElementById("tutor-comment-box").value;
+
+  if (!r.timestamp) {
+    statusEl.textContent = "⚠️ Can't save — this result predates comment support.";
+    statusEl.style.color = "var(--red-c)";
+    return;
+  }
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    statusEl.textContent = "⚠️ Apps Script URL not configured.";
+    statusEl.style.color = "var(--red-c)";
+    return;
+  }
+
+  statusEl.textContent = "Saving...";
+  statusEl.style.color = "var(--text-soft)";
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ action: "addComment", timestamp: r.timestamp, comment: comment }),
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "ok") {
+        r.tutorComment = comment;
+        // Reflect the change in whichever cache this result came from
+        if (teacherResultsCache) {
+          const match = teacherResultsCache.find(x => x.timestamp === r.timestamp);
+          if (match) match.tutorComment = comment;
+        }
+        const local = getStoredResults();
+        const localMatch = local.find(x => x.timestamp === r.timestamp);
+        if (localMatch) {
+          localMatch.tutorComment = comment;
+          localStorage.setItem(RESULTS_STORE_KEY, JSON.stringify(local));
+        }
+        statusEl.textContent = "✅ Saved";
+        statusEl.style.color = "#166534";
+      } else {
+        statusEl.textContent = "⚠️ Could not save — " + (res.message || "unknown error");
+        statusEl.style.color = "var(--red-c)";
+      }
+    })
+    .catch(() => {
+      statusEl.textContent = "⚠️ Could not reach Google Sheet.";
+      statusEl.style.color = "var(--red-c)";
+    });
+}
+
+function renderTeacherLoading() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div style="text-align:center;padding:60px 0">
+      <div style="font-size:36px;margin-bottom:12px">☁️</div>
+      <div style="font-size:15px;color:var(--text-soft)">Loading results from Google Sheet…</div>
+    </div>
+  `;
+}
+
+function renderTeacherPin() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div style="text-align:center;padding:40px 0 20px">
+      <div style="font-size:40px;margin-bottom:10px">🔒</div>
+      <div style="font-size:20px;font-weight:900;color:var(--brand-dark);margin-bottom:6px">Teacher Mode</div>
+      <div style="font-size:14px;color:var(--text-soft);margin-bottom:20px">Enter the PIN to view results</div>
+      <input id="pin-input" type="password" inputmode="numeric" placeholder="PIN"
+        style="width:160px;text-align:center;font-size:22px;letter-spacing:6px;padding:10px;border:2px solid var(--grey-mid);border-radius:10px;outline:none;margin-bottom:16px;">
+      <br>
+      <button id="btn-pin-ok" class="btn-next" style="width:160px">Enter</button>
+      <div style="margin-top:16px">
+        <button id="btn-pin-back" style="background:none;border:none;color:var(--text-soft);font-size:13px;cursor:pointer;text-decoration:underline;">← Back</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("btn-pin-back").addEventListener("click", () => render());
+
+  document.getElementById("btn-pin-ok").addEventListener("click", () => {
+    const pin = document.getElementById("pin-input").value;
+    if (pin === TEACHER_PIN) {
+      renderTeacherLoading();
+      fetchRemoteResults().then(remote => {
+        teacherResultsCache = remote; // null if offline/failed — dashboard falls back to local
+        renderTeacherDashboard();
+      });
+    } else {
+      document.getElementById("pin-input").style.borderColor = "var(--red-c)";
+      document.getElementById("pin-input").value = "";
+      document.getElementById("pin-input").placeholder = "Wrong PIN";
+    }
+  });
+}
+
+function passesFilters(r) {
+  if (dashboardFilters.search && !(r.name||"").toLowerCase().includes(dashboardFilters.search.toLowerCase())) return false;
+  if (dashboardFilters.year && r.year !== dashboardFilters.year) return false;
+  if (dashboardFilters.rag && r.rag !== dashboardFilters.rag) return false;
+  if (dashboardFilters.dateFrom) {
+    const d = new Date(r.date);
+    const from = new Date(dashboardFilters.dateFrom);
+    if (isNaN(d) || d < from) return false;
+  }
+  if (dashboardFilters.dateTo) {
+    const d = new Date(r.date);
+    const to = new Date(dashboardFilters.dateTo);
+    to.setHours(23,59,59,999);
+    if (isNaN(d) || d > to) return false;
+  }
+  return true;
+}
+
+function renderTeacherDashboard() {
+  const usingRemote = teacherResultsCache !== null;
+  const all = usingRemote ? teacherResultsCache : getStoredResults();
+  const filtered = all.filter(passesFilters);
+
+  const years = [...new Set(all.map(r => r.year).filter(Boolean))].sort();
+
+  const app = document.getElementById("app");
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="font-size:20px;font-weight:900;color:var(--brand-dark);flex:1">👨‍🏫 Teacher Dashboard</div>
+      <button id="btn-td-refresh" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">🔄</button>
+      <button id="btn-td-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">✕ Exit</button>
+    </div>
+    <div style="font-size:12px;margin-bottom:16px;color:${usingRemote ? '#166534' : '#92400E'};background:${usingRemote ? '#DCFCE7' : '#FEF3C7'};border-radius:8px;padding:6px 10px;">
+      ${usingRemote
+        ? '☁️ Synced from Google Sheet — results from every device'
+        : '⚠️ Could not reach Google Sheet — showing results saved on this device only'}
+    </div>
+
+    <input id="td-search" type="text" placeholder="🔍 Search student name..." value="${dashboardFilters.search}"
+      style="width:100%;border:2px solid var(--grey-mid);border-radius:10px;padding:10px 14px;font-size:15px;margin-bottom:10px;outline:none;">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <select id="td-filter-year" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All year groups</option>
+        ${years.map(y => `<option value="${y}" ${dashboardFilters.year===y?'selected':''}>${y}</option>`).join('')}
+      </select>
+      <select id="td-filter-rag" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All statuses</option>
+        <option value="GREEN" ${dashboardFilters.rag==='GREEN'?'selected':''}>🟢 Green</option>
+        <option value="AMBER" ${dashboardFilters.rag==='AMBER'?'selected':''}>🟠 Amber</option>
+        <option value="RED" ${dashboardFilters.rag==='RED'?'selected':''}>🔴 Red</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <label style="font-size:11px;color:var(--text-soft);display:block;margin-bottom:2px">From date</label>
+        <input id="td-filter-from" type="date" value="${dashboardFilters.dateFrom}" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:7px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--text-soft);display:block;margin-bottom:2px">To date</label>
+        <input id="td-filter-to" type="date" value="${dashboardFilters.dateTo}" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:7px 10px;font-size:13px;">
+      </div>
+    </div>
+    ${(dashboardFilters.search||dashboardFilters.year||dashboardFilters.rag||dashboardFilters.dateFrom||dashboardFilters.dateTo)
+      ? `<button id="td-clear-filters" style="background:none;border:none;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;margin-bottom:12px;padding:0;">✕ Clear all filters</button>`
+      : ''}
+    <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px">Showing ${filtered.length} of ${all.length} result${all.length===1?'':'s'}</div>
+  `;
+
+  if (filtered.length === 0) {
+    html += `<div style="text-align:center;color:var(--text-soft);padding:32px 0;font-size:15px;">
+      ${all.length === 0 ? 'No results found yet — complete an assessment first.' : 'No students match these filters.'}
+    </div>`;
+  } else {
+    filtered.forEach((r) => {
+      const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+      const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+      html += `
+        <div class="student-card" data-idx="${all.indexOf(r)}"
+          style="border:2px solid var(--grey-mid);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:15px;">${r.name}</div>
+            <div style="font-size:12px;color:var(--text-soft);">${r.year} · ${r.school||''} · ${formatDateNice(r.date)}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:20px;font-weight:900;color:var(--brand-dark)">${r.total}/38</div>
+            <span style="background:${ragBg};color:${ragFg};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.placement||r.rag}</span>
+          </div>
+          <div style="font-size:18px;color:var(--grey-mid)">›</div>
+        </div>
+      `;
+    });
+  }
+
+  app.innerHTML = html;
+
+  document.getElementById("btn-td-back").addEventListener("click", () => render());
+  document.getElementById("btn-td-refresh").addEventListener("click", () => {
+    renderTeacherLoading();
+    fetchRemoteResults().then(remote => {
+      teacherResultsCache = remote;
+      renderTeacherDashboard();
+    });
+  });
+  document.getElementById("td-search").addEventListener("input", e => {
+    dashboardFilters.search = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-year").addEventListener("change", e => {
+    dashboardFilters.year = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-rag").addEventListener("change", e => {
+    dashboardFilters.rag = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-from").addEventListener("change", e => {
+    dashboardFilters.dateFrom = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-to").addEventListener("change", e => {
+    dashboardFilters.dateTo = e.target.value;
+    renderTeacherDashboard();
+  });
+  const clearBtn = document.getElementById("td-clear-filters");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+      renderTeacherDashboard();
+    });
+  }
+  document.querySelectorAll(".student-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const idx = parseInt(card.dataset.idx);
+      renderTeacherStudentView(all[idx]);
+    });
+  });
+}
+
+function renderTeacherStudentView(r) {
+  const app = document.getElementById("app");
+  const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+  const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button id="btn-sv-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <div style="flex:1;font-size:18px;font-weight:900;color:var(--brand-dark)">${r.name}</div>
+      <button id="btn-print-report" style="background:var(--brand);border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Report</button>
+    </div>
+
+    <div style="text-align:center;background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:16px">
+      <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/38</span></div>
+      <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+      <div style="font-size:12px;color:var(--text-soft);margin-top:8px">${r.year} · ${r.school||''} · ${r.teacher||''} · ${formatDateNice(r.date)} · ⏱️ ${r.timeTaken||''}</div>
+    </div>
+
+    ${r.teacherNote ? `<div style="background:#f8fafc;border-left:3px solid var(--brand);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--text)">📝 ${r.teacherNote}</div>` : ''}
+
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:10px;color:#1a3a5c">Section Breakdown</div>
+  `;
+
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    const bc = cls === "green" ? "#1B5E20" : cls === "amber" ? "#E65100" : "#B71C1C";
+    html += `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px">
+          <span>${sec} · ${SECTIONS[sec].name}</span><span>${sc}/${max}</span>
+        </div>
+        <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div>
+
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:8px;color:#1a3a5c">💬 Tutor Comments</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Personal observations from the session — shows on the parent report.</div>
+      <textarea id="tutor-comment-box" rows="3" placeholder="e.g. Confident verbally but rushes written work..."
+        style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:10px;font-size:14px;font-family:inherit;resize:vertical;">${r.tutorComment || ''}</textarea>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+        <button id="btn-save-comment" style="background:var(--brand);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;color:white;">💾 Save Comment</button>
+        <span id="comment-save-status" style="font-size:12px;color:var(--text-soft);"></span>
+      </div>
+    </div>
+
+    <!-- Q by Q — clickable -->
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:4px;color:#1a3a5c">Question by Question</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:12px">Tap any question to review it in detail</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn-filter-sv" data-filter="all" style="padding:4px 12px;border-radius:20px;border:2px solid var(--brand-dark);background:var(--brand-dark);color:white;font-size:12px;font-weight:700;cursor:pointer">All</button>
+        <button class="btn-filter-sv" data-filter="wrong" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:white;color:#64748b;font-size:12px;font-weight:700;cursor:pointer">❌ Wrong</button>
+        <button class="btn-filter-sv" data-filter="skipped" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:white;color:#64748b;font-size:12px;font-weight:700;cursor:pointer">⬜ Skipped</button>
+      </div>
+  `;
+
+  QUESTIONS.forEach((q, qi) => {
+    const given   = r.answers ? r.answers[q.id] : null;
+    const correct = given && given !== 'IDK' && given === q.ans;
+    const idk     = given === 'IDK';
+    const icon    = correct ? '✅' : idk ? '⬜' : '❌';
+    const bg      = correct ? '#f0fdf4' : idk ? '#f8fafc' : '#fef2f2';
+    const border  = correct ? '#bbf7d0' : idk ? '#e2e8f0' : '#fca5a5';
+    const givenTxt = given && given !== 'IDK'
+      ? given : given === 'IDK' ? '?' : '–';
+    html += `
+      <div class="btn-q-detail" data-qi="${qi}"
+        style="background:${bg};border:1px solid ${border};border-radius:10px;
+          padding:9px 12px;margin-bottom:5px;cursor:pointer;
+          display:flex;align-items:center;gap:10px;transition:opacity 0.15s">
+        <span style="font-size:16px">${icon}</span>
+        <span style="font-weight:700;font-size:13px;flex:1">Q${q.id}. ${q.text.slice(0,65)}${q.text.length>65?'…':''}</span>
+        <span style="font-size:12px;font-weight:700;color:#94a3b8;min-width:16px">${givenTxt}</span>
+        <span style="color:#cbd5e1;font-size:16px">›</span>
+      </div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('btn-sv-back').addEventListener('click', () => renderTeacherDashboard());
+  document.getElementById('btn-print-report').addEventListener('click', () => renderParentReport(r));
+  document.getElementById('btn-save-comment').addEventListener('click', () => saveTutorComment(r));
+
+  document.querySelectorAll('.btn-filter-sv').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-filter-sv').forEach(b => {
+        b.style.background='white'; b.style.color='#64748b'; b.style.borderColor='#e2e8f0';
+      });
+      btn.style.background='var(--brand-dark)'; btn.style.color='white'; btn.style.borderColor='var(--brand-dark)';
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.btn-q-detail').forEach(card => {
+        const qi  = parseInt(card.dataset.qi);
+        const q   = QUESTIONS[qi];
+        const given = r.answers ? r.answers[q.id] : null;
+        const correct = given && given !== 'IDK' && given === q.ans;
+        const idk     = given === 'IDK' || !given;
+        const show = filter==='all' || (filter==='wrong' && !correct && !idk) || (filter==='skipped' && idk);
+        card.style.display = show ? 'flex' : 'none';
+      });
+    });
+  });
+
+  document.querySelectorAll('.btn-q-detail').forEach(card => {
+    card.addEventListener('click', () => {
+      renderQuestionDetail(r, parseInt(card.dataset.qi), 'all');
+    });
+  });
+}
+
+function renderQuestionDetail(r, qIndex, filter) {
+  const q = QUESTIONS[qIndex];
+  const given = r.answers ? r.answers[q.id] : null;
+  const correct = given && given !== 'IDK' && given === q.ans;
+  const idk = given === 'IDK' || !given;
+  const letters = ["A","B","C","D"];
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button id="btn-qd-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <div style="flex:1;font-size:16px;font-weight:900;color:var(--brand-dark)">${r.name} — Q${q.id}</div>
+      <button id="btn-qd-prev" ${qIndex===0?'disabled':''} style="background:var(--brand-dark);border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;color:white;${qIndex===0?'opacity:0.4;cursor:not-allowed;':''}">◀</button>
+      <button id="btn-qd-next" ${qIndex===QUESTIONS.length-1?'disabled':''} style="background:var(--brand-dark);border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;color:white;${qIndex===QUESTIONS.length-1?'opacity:0.4;cursor:not-allowed;':''}">▶</button>
+    </div>
+
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn-qd-filter" data-filter="all" style="padding:4px 12px;border-radius:20px;border:2px solid var(--brand-dark);background:${filter==='all'?'var(--brand-dark)':'white'};color:${filter==='all'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">All questions</button>
+      <button class="btn-qd-filter" data-filter="wrong" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:${filter==='wrong'?'var(--brand-dark)':'white'};color:${filter==='wrong'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">❌ Wrong only</button>
+      <button class="btn-qd-filter" data-filter="skipped" style="padding:4px 12px;border-radius:20px;border:2px solid #e2e8f0;background:${filter==='skipped'?'var(--brand-dark)':'white'};color:${filter==='skipped'?'white':'#64748b'};font-size:12px;font-weight:700;cursor:pointer">⬜ Skipped only</button>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#94a3b8;margin-bottom:10px">Question ${qIndex+1} of ${QUESTIONS.length}</div>
+
+    <div class="section-badge" style="background:${SECTIONS[q.sec].color}">${q.sec} · ${SECTIONS[q.sec].name}</div>
+
+    <div style="background:white;border:2px solid #dbeafe;border-radius:12px;padding:18px;margin-bottom:14px">
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Question ${q.id}</div>
+      <div style="font-size:19px;font-weight:800;color:var(--text);margin-bottom:12px">${q.text}</div>
+      ${q.display ? `<div class="q-display">${q.display}</div>` : ''}
+      <div class="options ${q.opts.length===4?'four-col':q.opts.length===3?'three-col':'two-col'}">
+  `;
+
+  q.opts.forEach((opt, i) => {
+    const letter = letters[i];
+    const isCorrectAns = letter === q.ans;
+    const isSelected = letter === given;
+    let cls = '';
+    let tag = '';
+    if (isCorrectAns) {
+      cls = 'correct';
+      tag = '<div style="font-size:12px;font-weight:700;margin-top:4px">✅ Correct</div>';
+    }
+    if (isSelected && !isCorrectAns) {
+      cls = 'wrong';
+      tag = '<div style="font-size:12px;font-weight:700;margin-top:4px">❌ Student chose this</div>';
+    }
+    html += `
+      <div class="opt-btn ${cls}" style="cursor:default;flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%">
+          <span class="opt-letter">${letter}</span>${opt}
+        </div>
+        ${tag}
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  if (idk) {
+    html += `<div style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">⬜ Student skipped this question (I don't know)</div>`;
+  } else if (!correct && MISCONCEPTIONS[q.id]) {
+    html += `<div style="background:#fffbeb;border-left:3px solid var(--gold);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--text)">
+      💡 <strong>Teacher note:</strong> ${MISCONCEPTIONS[q.id]}
+    </div>`;
+  }
+  html += `</div>`;
+
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('btn-qd-back').addEventListener('click', () => renderTeacherStudentView(r));
+  const prevBtn = document.getElementById('btn-qd-prev');
+  const nextBtn = document.getElementById('btn-qd-next');
+  if (prevBtn && qIndex > 0) prevBtn.addEventListener('click', () => renderQuestionDetail(r, qIndex-1, filter));
+  if (nextBtn && qIndex < QUESTIONS.length-1) nextBtn.addEventListener('click', () => renderQuestionDetail(r, qIndex+1, filter));
+
+  document.querySelectorAll('.btn-qd-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      let idx = qIndex;
+      const matches = (i) => {
+        const qq = QUESTIONS[i];
+        const gg = r.answers ? r.answers[qq.id] : null;
+        const cc = gg && gg !== 'IDK' && gg === qq.ans;
+        const ii = gg === 'IDK' || !gg;
+        return f==='all' || (f==='wrong' && !cc && !ii) || (f==='skipped' && ii);
+      };
+      if (!matches(idx)) {
+        for (let i = 0; i < QUESTIONS.length; i++) {
+          if (matches(i)) { idx = i; break; }
+        }
+      }
+      renderQuestionDetail(r, idx, f);
+    });
+  });
+}
+
+function renderParentReport(r) {
+  const app = document.getElementById("app");
+  const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
+  const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
+
+  let strong = [], weak = [];
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const pct = sc / SEC_MAX[sec];
+    if (pct >= 0.8) strong.push(SECTIONS[sec].name);
+    else if (pct < 0.5) weak.push(SECTIONS[sec].name);
+  });
+
+  let html = `
+    <div style="display:flex;gap:10px;margin-bottom:16px" class="no-print">
+      <button id="btn-pr-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
+      <button id="btn-pr-print" style="background:var(--brand);border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Print</button>
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:900;color:var(--brand-dark);letter-spacing:0.5px">AIM HIGH TUITION</div>
+      <div style="font-size:12px;color:var(--text-soft)">Master Maths Baseline — Parent Report</div>
+    </div>
+
+    <div style="text-align:center;background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:18px">
+      <div style="font-size:18px;font-weight:900;color:var(--brand-dark)">${r.name}</div>
+      <div style="font-size:12px;color:var(--text-soft);margin-bottom:8px">${r.year} · ${r.school||''} · ${formatDateNice(r.date)}</div>
+      <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/38</span></div>
+      <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+    </div>
+
+    <div style="font-size:14px;line-height:1.7;color:var(--text);background:var(--grey-light);border-radius:10px;padding:16px;margin-bottom:18px">
+      ${r.name.split(' ')[0]} scored ${r.total} out of 38 on the Master Maths Baseline Assessment.
+      ${strong.length ? `They showed particular strength in ${strong.join(', ')}. ` : ''}
+      ${weak.length ? `Areas to focus on going forward include ${weak.join(', ')}. ` : ''}
+    </div>
+
+    <div style="margin-bottom:10px;font-size:14px;font-weight:800;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px">Section Breakdown</div>
+  `;
+
+  Object.entries(r.secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    const bc = cls === "green" ? "#1B5E20" : cls === "amber" ? "#E65100" : "#B71C1C";
+    html += `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px">
+          <span>${SECTIONS[sec].name}</span><span>${sc}/${max}</span>
+        </div>
+        <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">✅ Strengths</div>
+        ${strong.length ? strong.map(s=>`<div style="font-size:12px;color:#14532D;margin-bottom:4px">• ${s}</div>`).join('') : '<div style="font-size:12px;color:#64748b">Working towards all sections</div>'}
+      </div>
+      <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:10px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">🎯 Priority Areas</div>
+        ${weak.length ? weak.map(s=>`<div style="font-size:12px;color:#7F1D1D;margin-bottom:4px">• ${s}</div>`).join('') : '<div style="font-size:12px;color:#64748b">No significant gaps identified</div>'}
+      </div>
+    </div>
+  `;
+
+  let qRows = '';
+  const letters38 = ['A','B','C','D'];
+  QUESTIONS.forEach(q => {
+    const given = r.answers ? r.answers[q.id] : null;
+    const correct = given && given !== 'IDK' && given === q.ans;
+    const idk = given === 'IDK';
+    const icon = correct ? '✅' : idk ? '⬜' : '❌';
+    const bg = correct ? '#f0fdf4' : idk ? '#f8fafc' : '#fef2f2';
+    const plainText = q.text.replace(/<[^>]*>/g, '');
+    const givenTxt = given && given !== 'IDK'
+      ? `${given} — ${(q.opts[letters38.indexOf(given)]||given).replace(/<[^>]*>/g, '')}`
+      : given === 'IDK' ? "I don't know" : '–';
+    const corrTxt = `${q.ans} — ${(q.opts[letters38.indexOf(q.ans)]||q.ans).replace(/<[^>]*>/g, '')}`;
+    qRows += `
+      <tr style="background:${bg}">
+        <td style="padding:5px 8px;font-weight:700;text-align:center;border:1px solid #e2e8f0">${q.id}</td>
+        <td style="padding:5px 8px;border:1px solid #e2e8f0">${q.sec}</td>
+        <td style="padding:5px 8px;border:1px solid #e2e8f0;font-size:11px">${plainText.slice(0,55)}${plainText.length>55?'…':''}</td>
+        <td style="padding:5px 8px;text-align:center;border:1px solid #e2e8f0">${icon}</td>
+        <td style="padding:5px 8px;font-size:11px;border:1px solid #e2e8f0;color:${correct?'#14532D':idk?'#94a3b8':'#dc2626'}">${givenTxt}</td>
+        <td style="padding:5px 8px;font-size:11px;border:1px solid #e2e8f0;color:#14532D">${correct?'–':corrTxt}</td>
+      </tr>`;
+  });
+
+  html += `
+    <div style="page-break-before:always;padding-top:20px">
+      <div style="font-size:13px;font-weight:700;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Question by Question Breakdown</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:var(--brand-dark);color:white">
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Q</th>
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Sec</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Question</th>
+            <th style="padding:7px 8px;text-align:center;border:1px solid #e2e8f0">Result</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Student Answer</th>
+            <th style="padding:7px 8px;text-align:left;border:1px solid #e2e8f0">Correct Answer</th>
+          </tr>
+        </thead>
+        <tbody>${qRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  html += `
+    ${r.tutorComment ? `
+    <div style="margin-top:18px">
+      <div style="margin-bottom:8px;font-size:14px;font-weight:800;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px">Tutor Comments</div>
+      <div style="background:var(--grey-light);border-radius:10px;padding:14px;font-size:13px;line-height:1.6;color:var(--text)">${r.tutorComment}</div>
+    </div>` : ''}
+    <div style="margin-top:20px;text-align:center;font-size:11px;color:var(--text-soft)">
+      Prepared by Aim High Tuition. Please speak to your child's tutor about next steps.
+    </div>
+  `;
+
+  app.innerHTML = html;
+  document.getElementById('btn-pr-back').addEventListener('click', () => renderTeacherStudentView(r));
+  document.getElementById('btn-pr-print').addEventListener('click', () => window.print());
+}
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let state = {
+  phase: "cover",
+  student: {},
+  qIndex: 0,
+  answers: {},
+  selected: null,
+  revealed: false,
+  startTime: null,
+};
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById("app");
+  if (state.phase === "cover")   app.innerHTML = renderCover();
+  if (state.phase === "quiz")    app.innerHTML = renderQuiz();
+  if (state.phase === "results") app.innerHTML = renderResults();
+  attachEvents();
+}
+
+function renderCover() {
+  return `
+    <div class="cover-title">Master Maths<br>Baseline Assessment</div>
+    <div class="cover-sub">Multiple Choice · 38 questions</div>
+
+    <div class="instr-box">
+      <h3>📋 Instructions</h3>
+      <ul>
+        <li>For each question, select the letter <strong>A, B, C or D</strong> next to your answer.</li>
+        <li>Only select <strong>ONE</strong> answer per question.</li>
+        <li>No calculator — work things out on paper first.</li>
+        <li>Try every question — have a go, even the challenge ones!</li>
+      </ul>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>First name</label>
+        <input id="f-name" type="text" placeholder="e.g. Lila" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label>Last name</label>
+        <input id="f-surname" type="text" placeholder="e.g. Ahmed">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Year group</label>
+        <select id="f-year">
+          <option value="">Select...</option>
+          <option>Reception</option>
+          <option>Year 1</option>
+          <option>Year 2</option>
+          <option>Year 3</option>
+          <option>Year 4</option>
+          <option>Year 5</option>
+          <option>Year 6</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>School</label>
+        <input id="f-school" type="text" placeholder="School name">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Teacher</label>
+        <input id="f-teacher" type="text" placeholder="Teacher name">
+      </div>
+      <div class="form-group">
+        <label>Today's date</label>
+        <input id="f-date" type="date" value="${new Date().toISOString().slice(0,10)}">
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn-start">Let's go! ⭐</button>
+    <div style="text-align:center;margin-top:14px">
+      <button id="btn-teacher-mode" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 8px;">🔒 Teacher Mode</button>
+    </div>
+  `;
+}
+
+function renderQuiz() {
+  const q = QUESTIONS[state.qIndex];
+  const total = QUESTIONS.length;
+  const pct = Math.round(((state.qIndex) / total) * 100);
+  const letters = ["A","B","C","D"];
+  const secMeta = SECTIONS[q.sec];
+  // Layout: 4 opts = 2x2 grid, 3 = three-col, 2 = two-col
+  const layout = q.opts.length === 4 ? "four-col" : q.opts.length === 3 ? "three-col" : "two-col";
+
+  let html = `
+    <div class="progress-wrap">
+      <div class="progress-bar" style="width:${pct}%"></div>
+    </div>
+    <div class="progress-label">Question ${state.qIndex + 1} of ${total}</div>
+  `;
+
+  // Checkpoint message
+  if (q.checkpoint && !state.revealed) {
+    html += `<div class="checkpoint"><span class="emoji">${q.checkpoint.slice(-2)}</span>${q.checkpoint.slice(0,-2).trim()}</div>`;
+  }
+
+  html += `
+    <div class="section-badge" style="background:${secMeta.color}">
+      ${q.sec} · ${secMeta.name}
+    </div>
+    <div class="q-number">Question ${q.id}</div>
+    <div class="q-text">${q.text}</div>
+  `;
+
+  if (q.display) {
+    html += `<div class="q-display">${q.display}</div>`;
+  }
+  if (q.hint) {
+    html += `<div class="q-hint">💡 ${q.hint}</div>`;
+  }
+
+  // Options
+  html += `<div class="options ${layout}">`;
+  q.opts.forEach((opt, i) => {
+    const letter = letters[i];
+    const cls = (letter === state.selected) ? "selected" : "";
+    html += `
+      <button class="opt-btn ${cls}" data-letter="${letter}">
+        <span class="opt-letter">${letter}</span>
+        ${opt}
+      </button>
+    `;
+  });
+  html += `</div>`;
+
+  const isLast = state.qIndex === total - 1;
+  const btnLabel = isLast ? "See my results 🎉" : "Next question →";
+
+  // IDK button only shows before an answer is picked
+  if (!state.selected) {
+    html += `<button class="btn-idk" id="btn-idk">🤷 I don't know — skip this one</button>`;
+  }
+
+  html += `<button class="btn-next" id="btn-next" ${!state.selected ? "disabled" : ""}>${btnLabel}</button>`;
+  return html;
+}
+
+function renderResults() {
+  // Calculate scores
+  let correctCount = 0;
+  const secScores = { A:0, B:0, C:0, D:0, E:0, F:0, G:0, H:0 };
+  QUESTIONS.forEach(q => {
+    if (state.answers[q.id] === q.ans) {
+      correctCount++;
+      secScores[q.sec]++;
+    }
+  });
+
+  const secA = secScores["A"];
+  const placement = getPlacement(correctCount, secA);
+  const summary = buildSummary(state.student, correctCount, secScores, placement);
+
+  // Student sees celebration only — no group or RAG shown
+  const stars = correctCount >= 29 ? "🌟🌟🌟" : correctCount >= 20 ? "⭐⭐" : "⭐";
+  const msg = correctCount >= 29
+    ? "Fantastic work! You should be really proud of yourself!"
+    : correctCount >= 20
+    ? "Great effort! You worked really hard today!"
+    : "Well done for trying every question — that takes courage!";
+
+  let html = `
+    <div style="text-align:center;padding:32px 0 20px">
+      <div style="font-size:64px;line-height:1;margin-bottom:16px">${stars}</div>
+      <div style="font-size:32px;font-weight:900;color:var(--brand-dark);margin-bottom:8px">
+        Well done, ${state.student.name.split(" ")[0]}!
+      </div>
+      <div style="font-size:18px;color:var(--text-soft);margin-bottom:20px">${msg}</div>
+      <div style="font-size:48px;font-weight:900;color:var(--brand-dark)">
+        ${correctCount}<span style="font-size:22px;font-weight:400;color:var(--text-soft)"> out of 38</span>
+      </div>
+    </div>
+
+    <div style="background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px 20px;text-align:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;color:var(--brand-dark)">
+        🎉 You've finished the assessment!
+      </div>
+      <div style="font-size:14px;color:var(--text-soft);margin-top:6px">
+        Your teacher will look at your results and let you know what's next.
+      </div>
+    </div>
+
+    <div class="section-breakdown">
+      <h3>How you did by topic</h3>
+  `;
+
+  Object.entries(secScores).forEach(([sec, sc]) => {
+    const max = SEC_MAX[sec];
+    const pct = Math.round((sc / max) * 100);
+    const cls = getSectionRag(sc, max);
+    html += `
+      <div class="sec-row">
+        <div class="sec-letter" style="background:${SECTIONS[sec].color}">${sec}</div>
+        <div class="sec-info">
+          <div class="sec-name">${SECTIONS[sec].name}</div>
+          <div class="sec-bar-wrap">
+            <div class="sec-bar ${cls}" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="sec-score">${sc}/${max}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>
+    <div id="submit-status" class="submit-status sending">⏳ Sending results to your teacher...</div>
+  `;
+
+  // Auto-submit with full placement data — teacher sees everything
+  setTimeout(() => submitResults(correctCount, secScores, summary, placement), 800);
+
+  return html;
+}
+
+// ── EVENTS ───────────────────────────────────────────────────────────────────
+function attachEvents() {
+  // Cover start
+  const btnStart = document.getElementById("btn-start");
+  if (btnStart) {
+    btnStart.addEventListener("click", () => {
+      const name    = document.getElementById("f-name").value.trim();
+      const surname = document.getElementById("f-surname").value.trim();
+      const year    = document.getElementById("f-year").value;
+      const school  = document.getElementById("f-school").value.trim();
+      const teacher = document.getElementById("f-teacher").value.trim();
+      const date    = document.getElementById("f-date").value;
+      if (!name || !year) {
+        alert("Please enter your first name and year group to start.");
+        return;
+      }
+      state.student = { name: name + (surname ? " " + surname : ""), year, school, teacher, date };
+      state.startTime = Date.now();
+      state.phase = "quiz";
+      state.qIndex = 0;
+      render();
+    });
+  }
+
+  // I don't know button
+  const btnIdk = document.getElementById("btn-idk");
+  if (btnIdk) {
+    btnIdk.addEventListener("click", () => {
+      const q = QUESTIONS[state.qIndex];
+      state.answers[q.id] = "IDK"; // record as skipped
+      state.qIndex++;
+      state.selected = null;
+      state.revealed = false;
+      if (state.qIndex >= QUESTIONS.length) {
+        state.phase = "results";
+      }
+      render();
+    });
+  }
+
+  // Option buttons
+  document.querySelectorAll(".opt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selected = btn.dataset.letter;
+      render();
+    });
+  });
+
+  // Next button — records answer and moves straight on, no reveal
+  const btnNext = document.getElementById("btn-next");
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      const q = QUESTIONS[state.qIndex];
+      state.answers[q.id] = state.selected;
+      state.qIndex++;
+      state.selected = null;
+      if (state.qIndex >= QUESTIONS.length) {
+        state.phase = "results";
+      }
+      render();
+    });
+  }
+
+  // Teacher mode button
+  const btnTeacher = document.getElementById("btn-teacher-mode");
+  if (btnTeacher) {
+    btnTeacher.addEventListener("click", () => {
+      renderTeacherPin();
+    });
+  }
+}
+
+// ── SUBMIT TO GOOGLE SHEETS ──────────────────────────────────────────────────
+function submitResults(total, secScores, summary, placement) {
+  const elapsedMs  = Date.now() - (state.startTime || Date.now());
+  const mins       = Math.floor(elapsedMs / 60000);
+  const secs       = Math.floor((elapsedMs % 60000) / 1000);
+  const timeTaken  = `${mins}m ${secs}s`;
+
+  const payload = {
+    name:        state.student.name,
+    year:        state.student.year,
+    school:      state.student.school,
+    teacher:     state.student.teacher,
+    date:        state.student.date,
+    timestamp:   new Date().toISOString(),
+    assessment:  "Master",
+    timeTaken:   timeTaken,
+    total:       total,
+    rag:         placement.rag,
+    placement:   placement.group,
+    teacherNote: placement.teacherNote,
+    secA:        secScores.A,
+    secB:        secScores.B,
+    secC:        secScores.C,
+    secD:        secScores.D,
+    secE:        secScores.E,
+    secF:        secScores.F,
+    secG:        secScores.G,
+    secH:        secScores.H,
+    summary:     summary,
+    answers:     JSON.stringify(state.answers),
+  };
+
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
+    document.getElementById("submit-status").className = "submit-status error";
+    document.getElementById("submit-status").textContent =
+      "⚠️ Results not sent — Apps Script URL not configured yet. Score saved locally.";
+    return;
+  }
+
+  // Cache locally too, so Teacher Mode works even if this device goes offline later
+  saveResultsToStore({
+    timestamp: payload.timestamp,
+    name: state.student.name,
+    year: state.student.year,
+    school: state.student.school,
+    teacher: state.student.teacher,
+    date: state.student.date,
+    total: total,
+    rag: placement.rag,
+    placement: placement.group,
+    teacherNote: placement.teacherNote,
+    timeTaken: timeTaken,
+    secScores: secScores,
+    answers: state.answers,
+    tutorComment: "",
+  });
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).then(() => {
+    const el = document.getElementById("submit-status");
+    if (el) {
+      el.className = "submit-status sent";
+      el.textContent = "✅ Results sent to your teacher!";
+    }
+  }).catch(() => {
+    const el = document.getElementById("submit-status");
+    if (el) {
+      el.className = "submit-status error";
+      el.textContent = "⚠️ Could not send results. Please tell your teacher.";
+    }
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
