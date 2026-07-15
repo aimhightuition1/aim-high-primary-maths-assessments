@@ -387,7 +387,7 @@
   .frac-line { border-top: 3px solid currentColor; width: 100%; margin: 2px 0; }
 
   @media print {
-  header, .no-print, #btn-rep-back, #btn-rep-print,
+  header, .no-print, #btn-rep-back, #btn-rep-print, #btn-rep-print-summary,
   #btn-sv-back, #btn-print, #btn-teacher-mode { display: none !important; }
   body { background: white; font-size: 12px; }
   .card { box-shadow: none; margin: 0; padding: 12px; max-width: 100%; border-radius: 0; }
@@ -1007,6 +1007,9 @@ function renderResults() {
 
   html += `</div>
     <div id="submit-status" class="submit-status sending">⏳ Sending results to your teacher...</div>
+    <div style="text-align:center;margin-top:16px">
+      <button id="btn-teacher-mode-results" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 8px;">🔒 Teacher Mode</button>
+    </div>
   `;
 
   setTimeout(() => submitResults(correctCount, secScores, summary, placement), 800);
@@ -1504,7 +1507,8 @@ function renderParentReport(r) {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;print-none" class="no-print">
       <button id="btn-rep-back" style="background:none;border:2px solid #e2e8f0;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;">← Back</button>
       <div style="flex:1;font-weight:700;color:#1a3a5c">Parent Report — ${r.name}</div>
-      <button id="btn-rep-print" style="background:#1a3a5c;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">🖨️ Print Report</button>
+      <button id="btn-rep-print" style="background:#1a3a5c;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">🖨️ Print Full Report</button>
+      <button id="btn-rep-print-summary" style="background:none;color:#1a3a5c;border:2px solid #1a3a5c;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">🖨️ Print Summary Only</button>
     </div>
 
     <!-- REPORT (print target) -->
@@ -1595,7 +1599,7 @@ function renderParentReport(r) {
       </div>
 
       <!-- PAGE BREAK -->
-      <div style="page-break-before:always;padding-top:20px">
+      <div id="qla-table-section" style="page-break-before:always;padding-top:20px">
         <div style="font-size:13px;font-weight:700;color:#1a3a5c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Question by Question Breakdown</div>
         <table style="width:100%;border-collapse:collapse;font-size:12px">
           <thead>
@@ -1634,6 +1638,13 @@ function renderParentReport(r) {
 
   document.getElementById('btn-rep-back').addEventListener('click', () => renderTeacherStudentView(r));
   document.getElementById('btn-rep-print').addEventListener('click', () => window.print());
+  document.getElementById('btn-rep-print-summary').addEventListener('click', () => {
+    const qlaSection = document.getElementById('qla-table-section');
+    qlaSection.style.display = 'none';
+    const restore = () => { qlaSection.style.display = ''; window.removeEventListener('afterprint', restore); };
+    window.addEventListener('afterprint', restore);
+    window.print();
+  });
 }
 
 // ── TEACHER STUDENT VIEW (main) ───────────────────────────────────────────────
@@ -1822,6 +1833,12 @@ function attachEvents() {
   const btnTeacher = document.getElementById("btn-teacher-mode");
   if (btnTeacher) {
     btnTeacher.addEventListener("click", function() {
+      renderTeacherPin();
+    });
+  }
+  const btnTeacherResults = document.getElementById("btn-teacher-mode-results");
+  if (btnTeacherResults) {
+    btnTeacherResults.addEventListener("click", function() {
       renderTeacherPin();
     });
   }

@@ -1250,7 +1250,8 @@ function renderParentReport(r) {
   let html = `
     <div style="display:flex;gap:10px;margin-bottom:16px" class="no-print">
       <button id="btn-pr-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
-      <button id="btn-pr-print" style="background:var(--brand);border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Print</button>
+      <button id="btn-pr-print" style="background:var(--brand);border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;color:white;">🖨️ Print Full Report</button>
+      <button id="btn-pr-print-summary" style="background:none;border:2px solid var(--brand);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--brand);">🖨️ Print Summary Only</button>
     </div>
 
     <div style="text-align:center;margin-bottom:20px">
@@ -1328,7 +1329,7 @@ function renderParentReport(r) {
   });
 
   html += `
-    <div style="page-break-before:always;padding-top:20px">
+    <div id="qla-table-section" style="page-break-before:always;padding-top:20px">
       <div style="font-size:13px;font-weight:700;color:var(--brand-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Question by Question Breakdown</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px">
         <thead>
@@ -1360,6 +1361,13 @@ function renderParentReport(r) {
   app.innerHTML = html;
   document.getElementById('btn-pr-back').addEventListener('click', () => renderTeacherStudentView(r));
   document.getElementById('btn-pr-print').addEventListener('click', () => window.print());
+  document.getElementById('btn-pr-print-summary').addEventListener('click', () => {
+    const qlaSection = document.getElementById('qla-table-section');
+    qlaSection.style.display = 'none';
+    const restore = () => { qlaSection.style.display = ''; window.removeEventListener('afterprint', restore); };
+    window.addEventListener('afterprint', restore);
+    window.print();
+  });
 }
 
 // ── STATE ────────────────────────────────────────────────────────────────────
@@ -1575,6 +1583,9 @@ function renderResults() {
 
   html += `</div>
     <div id="submit-status" class="submit-status sending">⏳ Sending results to your teacher...</div>
+    <div style="text-align:center;margin-top:16px">
+      <button id="btn-teacher-mode-results" style="background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 8px;">🔒 Teacher Mode</button>
+    </div>
   `;
 
   // Auto-submit with full placement data — teacher sees everything
@@ -1650,6 +1661,12 @@ function attachEvents() {
   const btnTeacher = document.getElementById("btn-teacher-mode");
   if (btnTeacher) {
     btnTeacher.addEventListener("click", () => {
+      renderTeacherPin();
+    });
+  }
+  const btnTeacherResults = document.getElementById("btn-teacher-mode-results");
+  if (btnTeacherResults) {
+    btnTeacherResults.addEventListener("click", () => {
       renderTeacherPin();
     });
   }
