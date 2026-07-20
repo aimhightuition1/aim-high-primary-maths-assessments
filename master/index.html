@@ -721,6 +721,46 @@ function getYearMismatchNote(year) {
   return "";
 }
 
+// ── ACADEMIC YEAR / TERM — auto-derived from the sitting date, UK school-year cycle ──
+function getAcademicYear(dateStr) {
+  const d = dateStr ? new Date(dateStr) : new Date();
+  if (isNaN(d)) return "";
+  const y = d.getFullYear(), m = d.getMonth() + 1; // 1-12
+  return (m >= 9) ? `${y}-${String(y + 1).slice(-2)}` : `${y - 1}-${String(y).slice(-2)}`;
+}
+function getTerm(dateStr) {
+  const d = dateStr ? new Date(dateStr) : new Date();
+  if (isNaN(d)) return "";
+  const m = d.getMonth() + 1;
+  if (m >= 9) return "Autumn";
+  if (m <= 4) return "Spring";
+  return "Summer";
+}
+
+// ── TUTOR LIST — fetched from the "Tutors" Google Sheet tab, editable by admin ──
+let tutorListCache = null;
+function fetchTutorList() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) return Promise.resolve([]);
+  return fetch(APPS_SCRIPT_URL + "?action=getTutors")
+    .then(res => res.json())
+    .then(names => Array.isArray(names) ? names : [])
+    .catch(() => []);
+}
+function populateTutorSelect() {
+  const sel = document.getElementById("f-teacher");
+  if (!sel) return;
+  fetchTutorList().then(names => {
+    tutorListCache = names;
+    if (!names.length) return;
+    const otherOpt = sel.querySelector('option[value="__other__"]');
+    names.forEach(n => {
+      const opt = document.createElement("option");
+      opt.value = n; opt.textContent = n;
+      sel.insertBefore(opt, otherOpt);
+    });
+  });
+}
+
 function buildSummary(student, total, secScores, placement) {
   const strong = [], weak = [];
   Object.entries(secScores).forEach(([sec, sc]) => {
@@ -743,7 +783,7 @@ function buildSummary(student, total, secScores, placement) {
 const TEACHER_PIN = "2468";
 const RESULTS_STORE_KEY = "aimhigh_master_all_results";
 let teacherResultsCache = null; // null = not fetched yet / fetch failed, use local fallback
-let dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+let dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "", academicYear: getAcademicYear(), term: "", status: "real" };
 
 function saveResultsToStore(studentData) {
   try {
@@ -791,6 +831,9 @@ function normalizeRemoteResult(row) {
     school:      row["School"],
     teacher:     row["Teacher"],
     date:        row["Date"],
+    academicYear: row["Academic Year"],
+    term:         row["Term"],
+    studentStatus: row["Student Status"],
     total:       Number(row["Total"]) || 0,
     rag:         row["RAG"],
     placement:   row["Group Placed"],
@@ -921,6 +964,13 @@ function passesFilters(r) {
   if (dashboardFilters.search && !(r.name||"").toLowerCase().includes(dashboardFilters.search.toLowerCase())) return false;
   if (dashboardFilters.year && r.year !== dashboardFilters.year) return false;
   if (dashboardFilters.rag && r.rag !== dashboardFilters.rag) return false;
+  if (dashboardFilters.academicYear && r.academicYear !== dashboardFilters.academicYear) return false;
+  if (dashboardFilters.term && r.term !== dashboardFilters.term) return false;
+  if (dashboardFilters.status === "real") {
+    if (r.studentStatus === "Test-Demo") return false;
+  } else if (dashboardFilters.status) {
+    if (r.studentStatus !== dashboardFilters.status) return false;
+  }
   if (dashboardFilters.dateFrom) {
     const d = new Date(r.date);
     const from = new Date(dashboardFilters.dateFrom);
@@ -941,6 +991,7 @@ function renderTeacherDashboard() {
   const filtered = all.filter(passesFilters);
 
   const years = [...new Set(all.map(r => r.year).filter(Boolean))].sort();
+  const academicYears = [...new Set(all.map(r => r.academicYear).filter(Boolean))].sort().reverse();
 
   const app = document.getElementById("app");
   let html = `
@@ -970,6 +1021,27 @@ function renderTeacherDashboard() {
         <option value="RED" ${dashboardFilters.rag==='RED'?'selected':''}>🔴 Red</option>
       </select>
     </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <select id="td-filter-ay" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All academic years</option>
+        ${academicYears.map(y => `<option value="${y}" ${dashboardFilters.academicYear===y?'selected':''}>${y}</option>`).join('')}
+      </select>
+      <select id="td-filter-term" style="border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="">All terms</option>
+        <option value="Autumn" ${dashboardFilters.term==='Autumn'?'selected':''}>Autumn</option>
+        <option value="Spring" ${dashboardFilters.term==='Spring'?'selected':''}>Spring</option>
+        <option value="Summer" ${dashboardFilters.term==='Summer'?'selected':''}>Summer</option>
+      </select>
+    </div>
+    <div style="margin-bottom:8px">
+      <select id="td-filter-status" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:8px 10px;font-size:13px;">
+        <option value="real" ${dashboardFilters.status==='real'?'selected':''}>Real students (hide Test/Demo)</option>
+        <option value="" ${dashboardFilters.status===''?'selected':''}>All students (incl. Test/Demo)</option>
+        <option value="Enrolled Student" ${dashboardFilters.status==='Enrolled Student'?'selected':''}>Enrolled only</option>
+        <option value="Prospective (Lead)" ${dashboardFilters.status==='Prospective (Lead)'?'selected':''}>Leads only</option>
+        <option value="Test-Demo" ${dashboardFilters.status==='Test-Demo'?'selected':''}>Test/Demo only</option>
+      </select>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
       <div>
         <label style="font-size:11px;color:var(--text-soft);display:block;margin-bottom:2px">From date</label>
@@ -980,8 +1052,8 @@ function renderTeacherDashboard() {
         <input id="td-filter-to" type="date" value="${dashboardFilters.dateTo}" style="width:100%;border:2px solid var(--grey-mid);border-radius:8px;padding:7px 10px;font-size:13px;">
       </div>
     </div>
-    ${(dashboardFilters.search||dashboardFilters.year||dashboardFilters.rag||dashboardFilters.dateFrom||dashboardFilters.dateTo)
-      ? `<button id="td-clear-filters" style="background:none;border:none;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;margin-bottom:12px;padding:0;">✕ Clear all filters</button>`
+    ${(dashboardFilters.search||dashboardFilters.year||dashboardFilters.rag||dashboardFilters.dateFrom||dashboardFilters.dateTo||dashboardFilters.term||dashboardFilters.academicYear!==getAcademicYear()||dashboardFilters.status!=="real")
+      ? `<button id="td-clear-filters" style="background:none;border:none;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;margin-bottom:12px;padding:0;">✕ Reset to default view</button>`
       : ''}
     <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px">Showing ${filtered.length} of ${all.length} result${all.length===1?'':'s'}</div>
   `;
@@ -1034,6 +1106,18 @@ function renderTeacherDashboard() {
     dashboardFilters.rag = e.target.value;
     renderTeacherDashboard();
   });
+  document.getElementById("td-filter-ay").addEventListener("change", e => {
+    dashboardFilters.academicYear = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-term").addEventListener("change", e => {
+    dashboardFilters.term = e.target.value;
+    renderTeacherDashboard();
+  });
+  document.getElementById("td-filter-status").addEventListener("change", e => {
+    dashboardFilters.status = e.target.value;
+    renderTeacherDashboard();
+  });
   document.getElementById("td-filter-from").addEventListener("change", e => {
     dashboardFilters.dateFrom = e.target.value;
     renderTeacherDashboard();
@@ -1045,7 +1129,7 @@ function renderTeacherDashboard() {
   const clearBtn = document.getElementById("td-clear-filters");
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
-      dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "" };
+      dashboardFilters = { search: "", year: "", rag: "", dateFrom: "", dateTo: "", academicYear: getAcademicYear(), term: "", status: "real" };
       renderTeacherDashboard();
     });
   }
@@ -1062,6 +1146,15 @@ function renderTeacherStudentView(r) {
   const ragBg  = r.rag==="GREEN"?"#C8E6C9":r.rag==="AMBER"?"#FFE0B2":"#FFCDD2";
   const ragFg  = r.rag==="GREEN"?"#1B5E20":r.rag==="AMBER"?"#E65100":"#B71C1C";
 
+  // Student History — other sittings matched by Name + Year + School (any baseline attempt on this device/sheet)
+  const usingRemoteSV = teacherResultsCache !== null;
+  const allSV = usingRemoteSV ? teacherResultsCache : getStoredResults();
+  const history = allSV.filter(x =>
+    x.timestamp !== r.timestamp &&
+    (x.name||"").toLowerCase() === (r.name||"").toLowerCase() &&
+    x.year === r.year && (x.school||"") === (r.school||"")
+  ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
   let html = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
       <button id="btn-sv-back" style="background:none;border:2px solid var(--grey-mid);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-soft);">← Back</button>
@@ -1077,6 +1170,19 @@ function renderTeacherStudentView(r) {
     </div>
 
     ${getYearMismatchNote(r.year) ? `<div style="background:#FFF8E1;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#78350F">${getYearMismatchNote(r.year)}</div>` : ''}
+
+    ${history.length ? `
+    <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:14px;margin-bottom:10px;color:#1a3a5c">📈 Student History (${history.length} previous sitting${history.length===1?'':'s'})</div>
+      ${history.map(h => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:13px">
+          <div>
+            <div style="font-weight:700">${formatDateNice(h.date)} ${h.academicYear ? `· ${h.academicYear}${h.term ? ' '+h.term : ''}` : ''}</div>
+            <div style="font-size:11px;color:var(--text-soft)">${h.assessment || 'Master'} · ${getStandardLabel(h.rag)}</div>
+          </div>
+          <div style="font-weight:900;color:var(--brand-dark)">${h.total}</div>
+        </div>`).join('')}
+    </div>` : ''}
 
     ${r.teacherNote ? `<div style="background:#f8fafc;border-left:3px solid var(--brand);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--text)">📝 ${r.teacherNote}</div>` : ''}
 
@@ -1480,11 +1586,25 @@ function renderCover() {
     <div class="form-row">
       <div class="form-group">
         <label>Teacher</label>
-        <input id="f-teacher" type="text" placeholder="Teacher name">
+        <select id="f-teacher">
+          <option value="">Select...</option>
+          <option value="__other__">Other (type in)</option>
+        </select>
+        <input id="f-teacher-other" type="text" placeholder="Teacher name" style="display:none;margin-top:6px;">
       </div>
       <div class="form-group">
         <label>Today's date</label>
         <input id="f-date" type="date" value="${new Date().toISOString().slice(0,10)}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:1">
+        <label>Student status</label>
+        <select id="f-status">
+          <option value="Enrolled Student">Enrolled Student</option>
+          <option value="Prospective (Lead)">Prospective (Lead)</option>
+          <option value="Test-Demo">Test / Demo (not a real student)</option>
+        </select>
       </div>
     </div>
 
@@ -1646,17 +1766,34 @@ function attachEvents() {
       const surname = document.getElementById("f-surname").value.trim();
       const year    = document.getElementById("f-year").value;
       const school  = document.getElementById("f-school").value.trim();
-      const teacher = document.getElementById("f-teacher").value.trim();
+      const teacherSel = document.getElementById("f-teacher").value;
+      const teacher = teacherSel === "__other__"
+        ? document.getElementById("f-teacher-other").value.trim()
+        : teacherSel;
+      const status  = document.getElementById("f-status").value;
       const date    = document.getElementById("f-date").value;
       if (!name || !year) {
         alert("Please enter your first name and year group to start.");
         return;
       }
-      state.student = { name: name + (surname ? " " + surname : ""), year, school, teacher, date };
+      state.student = {
+        name: name + (surname ? " " + surname : ""), year, school, teacher, date,
+        academicYear: getAcademicYear(date), term: getTerm(date), studentStatus: status
+      };
       state.startTime = Date.now();
       state.phase = "quiz";
       state.qIndex = 0;
       render();
+    });
+  }
+
+  // Teacher dropdown — populate from Google Sheet + toggle "Other" text box
+  const selTeacher = document.getElementById("f-teacher");
+  if (selTeacher) {
+    populateTutorSelect();
+    const otherBox = document.getElementById("f-teacher-other");
+    selTeacher.addEventListener("change", () => {
+      otherBox.style.display = selTeacher.value === "__other__" ? "block" : "none";
     });
   }
 
@@ -1727,6 +1864,9 @@ function submitResults(total, secScores, summary, placement) {
     school:      state.student.school,
     teacher:     state.student.teacher,
     date:        state.student.date,
+    academicYear: state.student.academicYear,
+    term:         state.student.term,
+    studentStatus: state.student.studentStatus,
     timestamp:   new Date().toISOString(),
     assessment:  "Master",
     timeTaken:   timeTaken,
@@ -1761,6 +1901,9 @@ function submitResults(total, secScores, summary, placement) {
     school: state.student.school,
     teacher: state.student.teacher,
     date: state.student.date,
+    academicYear: state.student.academicYear,
+    term: state.student.term,
+    studentStatus: state.student.studentStatus,
     total: total,
     rag: placement.rag,
     placement: placement.group,
