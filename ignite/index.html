@@ -741,6 +741,39 @@ function getSectionRag(score, max) {
   return "red-c";
 }
 
+// Plain-English "expected standard" labels for teachers/parents, mapped from
+// the existing RAG logic (GREEN/AMBER/RED already represent Above/At/Below).
+function getStandardLabel(rag) {
+  if (rag === "GREEN") return "Working Above Expected Standard";
+  if (rag === "AMBER") return "Working At Expected Standard";
+  return "Working Below Expected Standard";
+}
+function getSectionStandardLabel(cls) {
+  if (cls === "green") return "Above Expected";
+  if (cls === "amber") return "At Expected";
+  return "Below Expected";
+}
+
+// This baseline's designed target year group — used to flag when a child's
+// entered Year doesn't match, since the Expected Standard label only means
+// what it says when the content matches the child's actual year group.
+const BASELINE_TARGET_YEARS = ["Year 3", "Year 4"];
+function getYearMismatchNote(year) {
+  if (!year) return "";
+  const targetNums = BASELINE_TARGET_YEARS.map(y => parseInt(y.match(/\d+/)[0]));
+  const minTarget = Math.min(...targetNums), maxTarget = Math.max(...targetNums);
+  const m = year.match(/\d+/);
+  const yearNum = year === "Reception" ? 0 : (m ? parseInt(m[0]) : null);
+  if (yearNum === null) return ""; // "Other" or unrecognised — can't compare
+  if (yearNum < minTarget) {
+    return `⚠️ ${year} tested on a ${BASELINE_TARGET_YEARS.join('/')} baseline — this reflects performance on content above their normal year group, not their standing within ${year}.`;
+  }
+  if (yearNum > maxTarget) {
+    return `⚠️ ${year} tested on a ${BASELINE_TARGET_YEARS.join('/')} baseline — this reflects performance on content below their normal year group, not their standing within ${year}.`;
+  }
+  return "";
+}
+
 function buildSummary(student, total, secScores, placement) {
   const strong = [], weak = [];
   Object.entries(secScores).forEach(([sec, sc]) => {
@@ -1286,6 +1319,7 @@ function renderTeacherDashboard() {
           <div style="text-align:right">
             <div style="font-size:20px;font-weight:900;color:var(--brand-dark)">${r.total}/37</div>
             <span style="background:${ragBg};color:${ragFg};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.placement||r.rag}</span>
+            <div style="font-size:10px;color:var(--text-soft);margin-top:3px;font-weight:600;">${getStandardLabel(r.rag)}</div>
           </div>
           <div style="font-size:18px;color:var(--grey-mid)">›</div>
         </div>
@@ -1541,6 +1575,7 @@ function renderParentReport(r) {
           <div style="font-size:13px;color:#64748b;margin-bottom:6px">out of 37</div>
           <div style="font-size:22px;font-weight:900;color:#64748b">${pct}%</div>
           <div style="margin-top:8px;background:${ragHex};color:white;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:800;display:inline-block">${r.rag}</div>
+          <div style="margin-top:8px;font-size:12px;font-weight:800;color:#1a3a5c">${getStandardLabel(r.rag)}</div>
         </div>
         <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:14px">
           <div style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Placement & Next Steps</div>
@@ -1548,6 +1583,8 @@ function renderParentReport(r) {
           <div style="font-size:13px;color:#374151;line-height:1.5">${r.teacherNote||''}</div>
         </div>
       </div>
+
+      ${getYearMismatchNote(r.year) ? `<div style="background:#FFF8E1;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#78350F">${getYearMismatchNote(r.year)}</div>` : ''}
 
       <!-- Written summary -->
       <div style="background:#f8fafc;border-left:4px solid #1a3a5c;border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.7;color:#374151">
@@ -1563,7 +1600,8 @@ function renderParentReport(r) {
           const mx  = SEC_MAX[s];
           const p   = Math.round(sc/mx*100);
           const bc  = p>=80?'#16a34a':p>=50?'#f59e0b':'#dc2626';
-          const tag = p>=80?'Strong':'p>=50'?'Developing':'Needs support';
+          const cls = p>=80?'green':p>=50?'amber':'red-c';
+          const tag = getSectionStandardLabel(cls);
           const comment = p>=80
             ? 'Excellent performance in this section.'
             : p>=50
@@ -1580,7 +1618,7 @@ function renderParentReport(r) {
             </div>
             <div style="text-align:right;min-width:60px">
               <div style="font-size:14px;font-weight:900;color:#1a3a5c">${sc}/${mx}</div>
-              <div style="font-size:10px;color:${bc};font-weight:700">${p}%</div>
+              <div style="font-size:10px;color:${bc};font-weight:700">${p}% · ${tag}</div>
             </div>
           </div>`;
         }).join('')}
@@ -1667,9 +1705,12 @@ function renderTeacherStudentView(r) {
         <div><span style="opacity:0.7">Year</span><br><strong style="font-size:15px">${r.year}</strong></div>
         <div><span style="opacity:0.7">Score</span><br><strong style="font-size:22px">${r.total}/37</strong></div>
         <div><span style="opacity:0.7">Placement</span><br><strong style="font-size:15px">${r.placement}</strong></div>
+        <div style="grid-column:1/-1"><span style="opacity:0.7">Expected Standard</span><br><strong style="font-size:15px">${getStandardLabel(r.rag)}</strong></div>
         <div style="grid-column:1/-1"><span style="opacity:0.7">Teacher Action</span><br><strong>${r.teacherNote||''}</strong></div>
       </div>
     </div>
+
+    ${getYearMismatchNote(r.year) ? `<div style="background:#FFF8E1;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#78350F">${getYearMismatchNote(r.year)}</div>` : ''}
 
     <!-- Section breakdown -->
     <div style="background:white;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:14px">
@@ -1682,6 +1723,7 @@ function renderTeacherStudentView(r) {
     const mx  = SEC_MAX[s];
     const pct = Math.round((sc/mx)*100);
     const bc  = pct>=70?'#16a34a':pct>=50?'#f59e0b':'#dc2626';
+    const cls = pct>=70?'green':pct>=50?'amber':'red-c';
     html += `
       <div style="margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
@@ -1691,6 +1733,7 @@ function renderTeacherStudentView(r) {
         <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
         </div>
+        <div style="font-size:10px;color:${bc};font-weight:700;margin-top:2px">${getSectionStandardLabel(cls)}</div>
       </div>`;
   });
 
