@@ -731,6 +731,39 @@ function getSectionRag(score, max) {
   return "red-c";
 }
 
+// Plain-English "expected standard" labels for teachers/parents, mapped from
+// the existing RAG logic (GREEN/AMBER/RED already represent Above/At/Below).
+function getStandardLabel(rag) {
+  if (rag === "GREEN") return "Working Above Expected Standard";
+  if (rag === "AMBER") return "Working At Expected Standard";
+  return "Working Below Expected Standard";
+}
+function getSectionStandardLabel(cls) {
+  if (cls === "green") return "Above Expected";
+  if (cls === "amber") return "At Expected";
+  return "Below Expected";
+}
+
+// This baseline's designed target year group — used to flag when a child's
+// entered Year doesn't match, since the Expected Standard label only means
+// what it says when the content matches the child's actual year group.
+const BASELINE_TARGET_YEARS = ["Year 1", "Year 2"];
+function getYearMismatchNote(year) {
+  if (!year) return "";
+  const targetNums = BASELINE_TARGET_YEARS.map(y => parseInt(y.match(/\d+/)[0]));
+  const minTarget = Math.min(...targetNums), maxTarget = Math.max(...targetNums);
+  const m = year.match(/\d+/);
+  const yearNum = year === "Reception" ? 0 : (m ? parseInt(m[0]) : null);
+  if (yearNum === null) return ""; // "Other" or unrecognised — can't compare
+  if (yearNum < minTarget) {
+    return `⚠️ ${year} tested on a ${BASELINE_TARGET_YEARS.join('/')} baseline — this reflects performance on content above their normal year group, not their standing within ${year}.`;
+  }
+  if (yearNum > maxTarget) {
+    return `⚠️ ${year} tested on a ${BASELINE_TARGET_YEARS.join('/')} baseline — this reflects performance on content below their normal year group, not their standing within ${year}.`;
+  }
+  return "";
+}
+
 function buildSummary(student, total, secScores, placement) {
   const strong = [], weak = [];
   Object.entries(secScores).forEach(([sec, sc]) => {
@@ -1013,6 +1046,7 @@ function renderTeacherDashboard() {
           <div style="text-align:right">
             <div style="font-size:20px;font-weight:900;color:var(--brand-dark)">${r.total}/28</div>
             <span style="background:${ragBg};color:${ragFg};font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.placement||r.rag}</span>
+            <div style="font-size:10px;color:var(--text-soft);margin-top:3px;font-weight:600;">${getStandardLabel(r.rag)}</div>
           </div>
           <div style="font-size:18px;color:var(--grey-mid)">›</div>
         </div>
@@ -1080,8 +1114,11 @@ function renderTeacherStudentView(r) {
     <div style="text-align:center;background:var(--gold-light);border:2px solid var(--gold);border-radius:12px;padding:18px;margin-bottom:16px">
       <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/28</span></div>
       <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+      <div style="font-size:12px;font-weight:800;color:var(--brand-dark);margin-top:6px">${getStandardLabel(r.rag)}</div>
       <div style="font-size:12px;color:var(--text-soft);margin-top:8px">${r.year} · ${r.school||''} · ${r.teacher||''} · ${formatDateNice(r.date)} · ⏱️ ${r.timeTaken||''}</div>
     </div>
+
+    ${getYearMismatchNote(r.year) ? `<div style="background:#FFF8E1;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#78350F">${getYearMismatchNote(r.year)}</div>` : ''}
 
     ${r.teacherNote ? `<div style="background:#f8fafc;border-left:3px solid var(--brand);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--text)">📝 ${r.teacherNote}</div>` : ''}
 
@@ -1102,6 +1139,7 @@ function renderTeacherStudentView(r) {
         <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
         </div>
+        <div style="font-size:10px;color:${bc};font-weight:700;margin-top:2px">${getSectionStandardLabel(cls)}</div>
       </div>`;
   });
 
@@ -1302,7 +1340,10 @@ function renderParentReport(r) {
       <div style="font-size:12px;color:var(--text-soft);margin-bottom:8px">${r.year} · ${r.school||''} · ${formatDateNice(r.date)}</div>
       <div style="font-size:36px;font-weight:900;color:var(--brand-dark)">${r.total}<span style="font-size:16px;font-weight:400;color:var(--text-soft)">/28</span></div>
       <span style="background:${ragBg};color:${ragFg};font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;">${r.placement||r.rag}</span>
+      <div style="font-size:13px;font-weight:800;color:var(--brand-dark);margin-top:6px">${getStandardLabel(r.rag)}</div>
     </div>
+
+    ${getYearMismatchNote(r.year) ? `<div style="background:#FFF8E1;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#78350F">${getYearMismatchNote(r.year)}</div>` : ''}
 
     <div style="font-size:14px;line-height:1.7;color:var(--text);background:var(--grey-light);border-radius:10px;padding:16px;margin-bottom:18px">
       ${r.name.split(' ')[0]} scored ${r.total} out of 28 on the Ascend Maths Baseline Assessment.
@@ -1326,6 +1367,7 @@ function renderParentReport(r) {
         <div style="background:#f1f5f9;border-radius:6px;height:10px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:${bc};border-radius:6px"></div>
         </div>
+        <div style="font-size:10px;color:${bc};font-weight:700;margin-top:2px">${getSectionStandardLabel(cls)}</div>
       </div>`;
   });
 
